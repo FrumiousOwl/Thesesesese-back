@@ -1,0 +1,6 @@
+@srrf_HostAddress = http://localhost:5144
+
+GET {{srrf_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
