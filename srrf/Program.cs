@@ -1,11 +1,16 @@
 using Microsoft.EntityFrameworkCore;
 using srrf.Data;
+using srrf.Interface;
+using srrf.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
 
 // Add services to the container.
 builder.Services.AddDbContext<SrrfContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SrrfContext")));
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddScoped<ICategory, CategoryRepository> ();
+builder.Services.AddScoped<IServiceRequest, ServiceRequestRepository> ();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

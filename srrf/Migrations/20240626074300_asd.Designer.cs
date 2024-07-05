@@ -12,8 +12,8 @@ using srrf.Data;
 namespace srrf.Migrations
 {
     [DbContext(typeof(SrrfContext))]
-    [Migration("20240626064743_initial")]
-    partial class initial
+    [Migration("20240626074300_asd")]
+    partial class asd
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
