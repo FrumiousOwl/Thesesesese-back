@@ -9,5 +9,6 @@
         public string? Workstation { get; set; }
         public string? Status { get; set; }
         public int CategoryId { get; set; }
+        public int AssetId { get; set; }
     }
 }

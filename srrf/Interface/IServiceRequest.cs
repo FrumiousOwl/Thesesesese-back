@@ -6,7 +6,10 @@ namespace srrf.Interface
     {
         ICollection<ServiceRequest> GetServiceRequests();
         ServiceRequest GetServiceRequest(int id);
-        ServiceRequest GetServiceRequestByName(string name);
         bool ServiceRequestExists(int SRId);
+        bool CreateRequest(ServiceRequest serviceRequest);
+        bool UpdateRequest(ServiceRequest serviceRequest);
+        bool DeleteRequest(ServiceRequest serviceRequest);
+        bool Save();
     }
 }

@@ -10,7 +10,9 @@
         public string? Status { get; set; }
 
         public int CategoryId { get; set; } // Foreign key property.
-
-        public Category Category { get; set; } // Navigation property
+        public Category Category { get; set; } // Navigation
+                                               // 
+        public int AssetId { get; set; } // Foreign key property.
+        public Asset Asset { get; set; }
     }
 }

@@ -16,9 +16,12 @@ namespace srrf.Controllers
     {
         private readonly IServiceRequest _serviceRequest;
         private readonly IMapper _mapper;
-        public ServiceRequestController(IServiceRequest serviceRequest, IMapper mapper) {
+        private readonly SrrfContext _context;
+        public ServiceRequestController(SrrfContext context, IServiceRequest serviceRequest, IMapper mapper)
+        {
+            _context = context;
             _serviceRequest = serviceRequest;
-            _mapper = mapper;   
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -49,31 +52,93 @@ namespace srrf.Controllers
             return Ok(serviceRequest);
         }
 
-        [HttpGet("{serviceRequesterName}")]
-        [ProducesResponseType(200, Type = typeof(ServiceRequest))]
-        [ProducesResponseType(404)] // Updated response type for not found
-        public IActionResult GetServiceRequestByName(string serviceRequesterName)
+        [HttpGet("requestFromDate/{requestsDates}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> GetRequestsByDateRange([FromQuery] DateTime startDate, [FromQuery] DateTime endDate)
         {
-            if (string.IsNullOrEmpty(serviceRequesterName))
-            {
-                return BadRequest("Service requester name is required."); // Informative message
-            }
+            var requests = await _context.ServiceRequests
+                .Where(r => r.DateNeeded >= startDate && r.DateNeeded <= endDate)
+                .ToListAsync();
 
-            var serviceRequest = _mapper.Map<ServiceRequestDto>(_serviceRequest.GetServiceRequestByName(serviceRequesterName));
+            var requestes = _mapper.Map<List<ServiceRequest>>(requests);
 
-            if (serviceRequest == null) // Check if serviceRequest is null after retrieval
-            {
-                return NotFound("Service request not found for the provided name."); // Informative message
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            return Ok(serviceRequest);
+            return Ok(requestes);
         }
 
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult CreateRequest([FromBody] ServiceRequestDto serviceRequest)
+        {
+            if (serviceRequest == null)
+                return BadRequest(ModelState);
 
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var serviceRequestMap = _mapper.Map<ServiceRequest>(serviceRequest);
+
+            if (!_serviceRequest.CreateRequest(serviceRequestMap))
+            {
+                ModelState.AddModelError("", "Something went wrong while savin");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Successfully created");
+        }
+
+        [HttpPut("{requestId}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult UpdateRequest(int requestId, [FromBody] ServiceRequestDto updatedServiceRequest)
+        {
+            if (updatedServiceRequest == null)
+                return BadRequest(ModelState);
+
+            if (requestId != updatedServiceRequest.Id)
+                return BadRequest(ModelState);
+
+            if (!_serviceRequest.ServiceRequestExists(requestId))
+                return NotFound();
+
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            var serviceRequestMap = _mapper.Map<ServiceRequest>(updatedServiceRequest);
+
+            if (!_serviceRequest.UpdateRequest(serviceRequestMap))
+            {
+                ModelState.AddModelError("", "Something went wrong updating");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
+        }
+
+        [HttpDelete("{requestId}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult DeleteCategory(int requestId)
+        {
+            if (!_serviceRequest.ServiceRequestExists(requestId))
+            {
+                return NotFound();
+            }
+
+            var serviceRequestToDelete = _serviceRequest.GetServiceRequest(requestId);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (!_serviceRequest.DeleteRequest(serviceRequestToDelete))
+            {
+                ModelState.AddModelError("", "Something went wrong deleting");
+            }
+
+            return NoContent();
+        }
     }
 }
