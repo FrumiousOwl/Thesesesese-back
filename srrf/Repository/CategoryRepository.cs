@@ -45,7 +45,7 @@ namespace srrf.Repository
                 var saved = _context.SaveChanges();
                 return saved > 0 ? true : false;
             }
-            catch (Exception ex)
+            catch (Exception /*ex*/)
             {
                 return false;
             }

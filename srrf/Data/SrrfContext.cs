@@ -12,10 +12,10 @@ namespace srrf.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Configure the relationship between ServiceRequest and Category
+
             modelBuilder.Entity<ServiceRequest>()
                 .HasOne(s => s.Category)
-                .WithMany() // If Category can have multiple ServiceRequests, use WithMany()
+                .WithMany() 
                 .HasForeignKey(s => s.CategoryId);
 
 

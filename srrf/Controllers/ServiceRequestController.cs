@@ -28,6 +28,7 @@ namespace srrf.Controllers
 
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<ServiceRequest>))]
+        [ProducesResponseType(503)]
         public IActionResult GetServiceRequests()
         {
             var serviceRequest = _mapper.Map<List<ServiceRequestDto>>(_serviceRequest.GetServiceRequests());
@@ -96,6 +97,11 @@ namespace srrf.Controllers
             if (serviceRequest.CategoryId == null && serviceRequest.Name == null)
             {
                 throw new ArgumentNullException(nameof(serviceRequest.CategoryId), " Name is required.");
+            }
+
+            if (_serviceRequest.ServiceRequestExists(serviceRequest.Rid))
+            {
+                return BadRequest("Rid already Exists in the database");
             }
 
             var serviceRequestMap = _mapper.Map<ServiceRequest>(serviceRequest);
