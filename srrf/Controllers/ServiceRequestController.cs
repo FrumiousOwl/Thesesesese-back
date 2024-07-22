@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using srrf.Data;
 using srrf.Dto;
@@ -53,6 +54,20 @@ namespace srrf.Controllers
             return Ok(serviceRequest);
         }
 
+        [HttpGet("{requestsName}/searchName")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> GetRequestsByName([FromQuery] string name)
+        {
+            var requests = await _context.ServiceRequests
+                .Where(n => n.Name.ToLower().StartsWith(name.ToLower()))
+                .ToListAsync();
+
+            var requestes = _mapper.Map<List<ServiceRequestDto>>(requests);
+
+            return Ok(requestes);
+        }
+
         [HttpGet("{requestsDates}/requestDate")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
@@ -62,7 +77,7 @@ namespace srrf.Controllers
                 .Where(r => r.DateNeeded >= startDate && r.DateNeeded <= endDate)
                 .ToListAsync();
 
-            var requestes = _mapper.Map<List<ServiceRequest>>(requests);
+            var requestes = _mapper.Map<List<ServiceRequestDto>>(requests);
 
             return Ok(requestes);
         }
@@ -87,7 +102,7 @@ namespace srrf.Controllers
 
             if (!_serviceRequest.CreateRequest(serviceRequestMap))
             {
-                ModelState.AddModelError("", "Something went wrong while savin");
+                ModelState.AddModelError("", "Something went wrong while saving");
                 return StatusCode(500, ModelState);
             }
 

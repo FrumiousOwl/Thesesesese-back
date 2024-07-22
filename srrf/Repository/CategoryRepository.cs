@@ -40,8 +40,15 @@ namespace srrf.Repository
         }
         public bool Save()
         {
-            var saved = _context.SaveChanges();
-            return saved > 0 ? true : false;
+            try
+            {
+                var saved = _context.SaveChanges();
+                return saved > 0 ? true : false;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
 
         public bool UpdateCategory(Category category)

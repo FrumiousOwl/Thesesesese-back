@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using srrf.Data;
 using srrf.Dto;
 using srrf.Interface;
@@ -98,6 +99,20 @@ namespace srrf.Controllers
             };
 
             return Ok(assetStatusDto);
+        }
+
+        [HttpGet("searchCategory/{categoryName}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> GetCategoryByName([FromQuery] string name)
+        {
+            var namae = await _context.Categories
+                .Where(c => c.Name.ToUpper().StartsWith(name.ToUpper()))
+                .ToListAsync();
+
+            var nameMap = _mapper.Map<List<CategoryDto>>(namae);
+
+            return Ok(nameMap);
         }
 
         [HttpPost]
