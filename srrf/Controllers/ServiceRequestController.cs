@@ -7,6 +7,7 @@ using srrf.Dto;
 using srrf.Interface;
 using srrf.Models;
 using srrf.Repository;
+using System.ComponentModel.DataAnnotations;
 
 namespace srrf.Controllers
 {
@@ -52,7 +53,7 @@ namespace srrf.Controllers
             return Ok(serviceRequest);
         }
 
-        [HttpGet("requestFromDate/{requestsDates}")]
+        [HttpGet("{requestsDates}/requestDate")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         public async Task<IActionResult> GetRequestsByDateRange([FromQuery] DateTime startDate, [FromQuery] DateTime endDate)
@@ -76,6 +77,11 @@ namespace srrf.Controllers
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            if (serviceRequest.CategoryId == null && serviceRequest.Name == null)
+            {
+                throw new ArgumentNullException(nameof(serviceRequest.CategoryId), " Name is required.");
+            }
 
             var serviceRequestMap = _mapper.Map<ServiceRequest>(serviceRequest);
 
@@ -121,7 +127,7 @@ namespace srrf.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public IActionResult DeleteCategory(int requestId)
+        public IActionResult DeleteRequest(int requestId)
         {
             if (!_serviceRequest.ServiceRequestExists(requestId))
             {

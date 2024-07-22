@@ -12,8 +12,8 @@ using srrf.Data;
 namespace srrf.Migrations
 {
     [DbContext(typeof(SrrfContext))]
-    [Migration("20240709034300_addingAsset")]
-    partial class addingAsset
+    [Migration("20240718071424_fistMigrate")]
+    partial class fistMigrate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,16 +25,19 @@ namespace srrf.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("srrf.Models.Asset", b =>
+            modelBuilder.Entity("srrf.Models.Category", b =>
                 {
-                    b.Property<int>("AssetId")
+                    b.Property<int>("CategoryId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AssetId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CategoryId"));
 
                     b.Property<int?>("Available")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("DatePurchased")
+                        .HasColumnType("datetime2");
 
                     b.Property<int?>("Defective")
                         .HasColumnType("int");
@@ -48,26 +51,7 @@ namespace srrf.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("AssetId");
-
-                    b.ToTable("Assets");
-                });
-
-            modelBuilder.Entity("srrf.Models.Category", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
+                    b.HasKey("CategoryId");
 
                     b.ToTable("Categories");
                 });
@@ -80,9 +64,6 @@ namespace srrf.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AssetId")
-                        .HasColumnType("int");
-
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
@@ -92,18 +73,22 @@ namespace srrf.Migrations
                     b.Property<string>("Department")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("MaterialNeeded")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Status")
+                    b.Property<string>("Problem")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Rid")
+                        .HasColumnType("int");
 
                     b.Property<string>("Workstation")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AssetId");
 
                     b.HasIndex("CategoryId");
 
@@ -112,19 +97,11 @@ namespace srrf.Migrations
 
             modelBuilder.Entity("srrf.Models.ServiceRequest", b =>
                 {
-                    b.HasOne("srrf.Models.Asset", "Asset")
-                        .WithMany()
-                        .HasForeignKey("AssetId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("srrf.Models.Category", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Asset");
 
                     b.Navigation("Category");
                 });

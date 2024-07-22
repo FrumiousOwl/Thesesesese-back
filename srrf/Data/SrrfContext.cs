@@ -9,7 +9,6 @@ namespace srrf.Data
         { }
         public DbSet<ServiceRequest> ServiceRequests { get; set; }
         public DbSet<Category> Categories { get; set; }
-        public DbSet<Asset> Assets { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -20,10 +19,6 @@ namespace srrf.Data
                 .HasForeignKey(s => s.CategoryId);
 
 
-            modelBuilder.Entity<ServiceRequest>()
-                .HasOne(s => s.Asset)
-                .WithMany()
-                .HasForeignKey(a => a.AssetId);
         }
     }
 }

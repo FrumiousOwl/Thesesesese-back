@@ -11,7 +11,6 @@ builder.Services.AddDbContext<SrrfContext>(options => options.UseSqlServer(build
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<ICategory, CategoryRepository> ();
 builder.Services.AddScoped<IServiceRequest, ServiceRequestRepository> ();
-builder.Services.AddScoped<IAsset, AssetRepository>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

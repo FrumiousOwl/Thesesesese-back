@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using srrf.Data;
 using srrf.Dto;
 using srrf.Interface;
 using srrf.Models;
@@ -12,15 +13,17 @@ namespace srrf.Controllers
     {
         private readonly ICategory _category;
         private readonly IMapper _mapper;
-        public CategoryController(ICategory category, IMapper mapper)
+        private readonly SrrfContext _context;
+        public CategoryController(ICategory category, IMapper mapper, SrrfContext context)
         {
             _category = category;
             _mapper = mapper;
+            _context = context;
         }
 
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Category>))]
-        public IActionResult GetServiceRequests()
+        public IActionResult GetCategories()
         {
             var category = _mapper.Map<List<CategoryDto>>(_category.GetCategories());
 
@@ -45,10 +48,62 @@ namespace srrf.Controllers
 
             return Ok(category);
         }
+
+        [HttpGet("{assetId}/defective")]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> GetAssetDefectiveStatus(int assetDefectiveId)
+        {
+            var asset = await _context.Categories.FindAsync(assetDefectiveId);
+
+            if (asset == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(asset.Defective);
+        }
+
+        [HttpGet("{assetId}/deployed")]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> GetAssetDeployedStatus(int assetDeployedId)
+        {
+            var asset = await _context.Categories.FindAsync(assetDeployedId);
+
+            if (asset == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(asset.Deployed);
+        }
+
+        [HttpGet("{assetId}/available")]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> GetAssetAvaialbleStatus(int assetAvailableId)
+        {
+            var asset = await _context.Categories.FindAsync(assetAvailableId);
+
+            if (asset == null)
+            {
+                return NotFound();
+            }
+
+            var assetStatusDto = new AvailableAssetDto
+            {
+                AssetId = asset.CategoryId,
+                Name = asset.Name,
+                DatePurchased = asset.DatePurchased,
+                Available = asset.Defective,
+                Deployed = asset.Deployed
+            };
+
+            return Ok(assetStatusDto);
+        }
+
         [HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult CreateRequest([FromBody] CategoryDto category)
+        public IActionResult CreateCategory([FromBody] CategoryDto category)
         {
             if (category == null)
                 return BadRequest(ModelState);

@@ -1,0 +1,4 @@
+﻿Exception handler;
+Auto decrement when releasing asset &
+auto increment when replacing a defective ones
+
