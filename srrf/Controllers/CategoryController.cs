@@ -23,7 +23,7 @@ namespace srrf.Controllers
             _context = context;
         }
 
-        [HttpGet]
+ /*       [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Category>))]
         public IActionResult GetCategories()
         {
@@ -33,6 +33,21 @@ namespace srrf.Controllers
                 return BadRequest(ModelState);
 
             return Ok(category);
+        }*/
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Category>>> GetAssets(int page = 0, int pageSize = 0)
+        {
+            var items = await _context.Categories
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(items);
         }
 
         [HttpGet("{categoryId}")]
@@ -172,9 +187,9 @@ namespace srrf.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public IActionResult DeleteCategory(int categoryId)
+        public async Task<IActionResult> DeleteCategory(int categoryId)
         {
-            if (!_category.CategoriesExists(categoryId))
+            if ( !_category.CategoriesExists(categoryId))
             {
                 return NotFound();
             }
