@@ -23,7 +23,7 @@ namespace srrf.Controllers
             _context = context;
         }
 
- /*       [HttpGet]
+        [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Category>))]
         public IActionResult GetCategories()
         {
@@ -33,40 +33,47 @@ namespace srrf.Controllers
                 return BadRequest(ModelState);
 
             return Ok(category);
-        }*/
-
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Category>>> GetAssets(int page = 0, int pageSize = 0)
-        {
-            var items = await _context.Categories
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
-
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            return Ok(items);
         }
 
-        [HttpGet("{categoryId}")]
-        [ProducesResponseType(200, Type = typeof(Category))]
+        /*       [HttpGet]
+               public async Task<ActionResult<IEnumerable<Category>>> GetAssets(int page = 0, int pageSize = 0)
+               {
+                   var items = await _context.Categories
+                       .Skip((page - 1) * pageSize)
+                       .Take(pageSize)
+                       .ToListAsync();
+
+
+                   if (!ModelState.IsValid)
+                       return BadRequest(ModelState);
+
+                   return Ok(items);
+               }*/
+
+        [HttpGet("searchCategoryId/{categoryId}")]
+        [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult GetCategory(int categoryId)
+        public async Task<IActionResult> GetCategoryById([FromQuery] int categoryId)
         {
-            if (!_category.CategoriesExists(categoryId))
-                return NotFound();
+            if (categoryId == null)
+            {
 
-            var category = _mapper.Map<CategoryDto>(_category.GetCategory(categoryId));
+                return NotFound();
+            }
+
+            var catId = await _context.Categories
+            .Where(c => c.CategoryId == categoryId)
+            .ToListAsync();
+
+            var nameMap = _mapper.Map<List<CategoryDto>>(catId);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(category);
+            return Ok(nameMap);
         }
 
-        [HttpGet("{assetId}/defective")]
+        [HttpGet("defective/{assetId}")]
         [ProducesResponseType(400)]
         public async Task<IActionResult> GetAssetDefectiveStatus(int assetDefectiveId)
         {
@@ -80,7 +87,7 @@ namespace srrf.Controllers
             return Ok(asset.Defective);
         }
 
-        [HttpGet("{assetId}/deployed")]
+        [HttpGet("deployed/{assetId}")]
         [ProducesResponseType(400)]
         public async Task<IActionResult> GetAssetDeployedStatus(int assetDeployedId)
         {
@@ -94,7 +101,7 @@ namespace srrf.Controllers
             return Ok(asset.Deployed);
         }
 
-        [HttpGet("{assetId}/available")]
+        [HttpGet("available/{assetId}")]
         [ProducesResponseType(400)]
         public async Task<IActionResult> GetAssetAvaialbleStatus(int assetAvailableId)
         {
@@ -122,6 +129,11 @@ namespace srrf.Controllers
         [ProducesResponseType(400)]
         public async Task<IActionResult> GetCategoryByName([FromQuery] string name)
         {
+            if (name == null)
+            {
+                return NotFound();
+            }
+
             var namae = await _context.Categories
                 .Where(c => c.Name.ToUpper().StartsWith(name.ToUpper()))
                 .ToListAsync();
@@ -138,7 +150,6 @@ namespace srrf.Controllers
         {
             if (category == null)
                 return BadRequest(ModelState);
-
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

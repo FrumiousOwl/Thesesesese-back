@@ -39,27 +39,38 @@ namespace srrf.Controllers
             return Ok(serviceRequest);
         }
 
-        [HttpGet("{serviceRequestId}")]
-        [ProducesResponseType(200, Type = typeof(ServiceRequest))]
+        [HttpGet("searchServiceId/{serviceRequestId}")]
+        [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult GetServiceRequest(int serviceRequestId)
+        public async Task<IActionResult> GetServiceRequest([FromQuery] int serviceRequestId)
         {
-            if (!_serviceRequest.ServiceRequestExists(serviceRequestId))
-                return NotFound();
+            if (serviceRequestId == null || !_serviceRequest.ServiceRequestExists(serviceRequestId))
+            {
 
-            var serviceRequest = _mapper.Map<ServiceRequestDto>(_serviceRequest.GetServiceRequest(serviceRequestId));
+                return NotFound();
+            }
+
+
+            var requests = await _context.ServiceRequests
+                .Where(n => n.Id == serviceRequestId)
+                .ToListAsync();
+
+            var requestes = _mapper.Map<List<ServiceRequestDto>>(requests);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(serviceRequest);
+            return Ok(requestes);
         }
 
-        [HttpGet("{requestsName}/searchName")]
+        [HttpGet("searchName/{requestsName}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         public async Task<IActionResult> GetRequestsByName([FromQuery] string name)
         {
+            if (name == null)
+                return NotFound();
+
             var requests = await _context.ServiceRequests
                 .Where(n => n.Name.ToLower().StartsWith(name.ToLower()))
                 .ToListAsync();
@@ -69,11 +80,12 @@ namespace srrf.Controllers
             return Ok(requestes);
         }
 
-        [HttpGet("{requestsDates}/requestDate")]
+        [HttpGet("requestDate/{requestsDates}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         public async Task<IActionResult> GetRequestsByDateRange([FromQuery] DateTime startDate, [FromQuery] DateTime endDate)
         {
+
             var requests = await _context.ServiceRequests
                 .Where(r => r.DateNeeded >= startDate && r.DateNeeded <= endDate)
                 .ToListAsync();
@@ -86,7 +98,7 @@ namespace srrf.Controllers
         [HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult CreateRequest([FromBody] ServiceRequestDto serviceRequest)
+        public async Task<IActionResult> CreateRequest([FromBody] ServiceRequestDto serviceRequest)
         {
             if (serviceRequest == null)
                 return BadRequest(ModelState);

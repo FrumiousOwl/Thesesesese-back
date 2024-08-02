@@ -8,4 +8,5 @@
         public int? Deployed { get; set; }
         public DateTime? DatePurchased { get; set; }
     }
+
 }
