@@ -12,7 +12,9 @@ namespace srrf.Helper
         {
             CreateMap<Category, CategoryDto>();
             CreateMap<ServiceRequest, ServiceRequestDto>();
+            CreateMap<Invoice, InvoiceDto>();
 
+            CreateMap<InvoiceDto, Invoice>();
             CreateMap<CategoryDto, Category>();
             CreateMap<ServiceRequestDto, ServiceRequest>();
         }

@@ -9,6 +9,7 @@ namespace srrf.Data
         { }
         public DbSet<ServiceRequest> ServiceRequests { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<Invoice> Invoices { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
