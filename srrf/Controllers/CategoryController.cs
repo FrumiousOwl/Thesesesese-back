@@ -55,9 +55,6 @@ namespace srrf.Controllers
         [ProducesResponseType(400)]
         public async Task<IActionResult> GetCategoryById([FromQuery] int categoryId)
         {
-            if (categoryId == null)
-            {
-
                 return NotFound();
             }
 
