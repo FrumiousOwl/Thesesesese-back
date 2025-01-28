@@ -1,4 +1,9 @@
-﻿Exception handler;
-Auto decrement when releasing asset &
-auto increment when replacing a defective ones
-
+﻿-Need an autocomplete/search for client-side when typing a hardware name, the hardware name inputted will be searched if its exist within the database.
+-Need password hashing and reset
+-Encryption for some data
+-ML for finding anomaly
+-database change history
+-need to somehow convert DB change history to numerical values
+-API request limiting
+-Input sanitation and validation
+-Password reset

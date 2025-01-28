@@ -1,0 +1,88 @@
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using srrf.Data;
+using srrf.Dto.HardwareRequest;
+using srrf.Interfaces;
+using srrf.Mapper;
+using srrf.Models;
+
+namespace srrf.Controllers
+{
+    [Route("api/HardwareRequest")]
+    [ApiController]
+    public class HardwareRequestController : ControllerBase
+    {
+        private readonly Context _context;
+        private readonly IHardwareRequestRepository _repository;
+        public HardwareRequestController(Context context, IHardwareRequestRepository repository)
+        {
+
+            _context = context;
+            _repository = repository;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var requestHardware = await _repository.GetAllAsync();
+            var requestHardwaredto = requestHardware.Select(h => h.ToHardwareRequestDto());
+
+            return Ok(requestHardwaredto);
+        }
+
+        [HttpGet("{hardwareRequestId}")]
+        public async Task<IActionResult> GetId(int hardwareRequestId)
+        {
+            var hardwareRequest = await _repository.GetByIdAsync(hardwareRequestId);
+
+            if (hardwareRequest == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(hardwareRequest.ToHardwareRequestDto());
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] HardwareRequestCUDDto createDto)
+        {
+            var hardwareRequestModel = createDto.CreateHardwareRequestDto();
+            await _repository.CreateAsync(hardwareRequestModel);
+
+            return CreatedAtAction(nameof(GetId), new { hardwareRequestId = hardwareRequestModel.RequestId }, hardwareRequestModel.ToHardwareRequestDto());
+        }
+
+        [HttpPut]
+        [Route("{hardwareRequestId}")]
+        public async Task<IActionResult> Update([FromRoute] int hardwareRequestId, [FromBody] HardwareRequestCUDDto updateDto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var hardwareRequestModel = await _repository.UpdateAsync(hardwareRequestId, updateDto);
+
+            if (hardwareRequestModel == null)
+            {
+                return NotFound(hardwareRequestId);
+            }
+
+            return Ok(hardwareRequestModel.ToHardwareRequestDto());
+        }
+
+        [HttpDelete]
+        [Route("{hardwareRequestId}")]
+        public async Task<IActionResult> Delete([FromRoute] int hardwareRequestId)
+        {
+            var hardwareRequestModel = await _repository.DeleteAsync(hardwareRequestId);
+
+            if (hardwareRequestModel == null)
+            {
+                return NotFound();
+            }
+
+            return NoContent();
+        }
+    }
+}
