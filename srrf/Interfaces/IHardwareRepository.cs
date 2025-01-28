@@ -1,11 +1,12 @@
 ﻿using srrf.Dto.Hardware;
 using srrf.Models;
+using srrf.Queries;
 
 namespace srrf.Interfaces
 {
     public interface IHardwareRepository
     {
-        Task<List<Hardware>> GetAllAsync();
+        Task<List<Hardware>> GetAllAsync(QueryHardware queryHardware);
         Task<Hardware?> GetByIdAsync(int id);
         Task<Hardware> CreateAsync(Hardware hardwareModel);
         Task<Hardware?> UpdateAsync(int id, HardwareCUDDto hardwareDto);

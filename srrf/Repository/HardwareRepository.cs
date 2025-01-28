@@ -3,6 +3,7 @@ using srrf.Data;
 using srrf.Dto.Hardware;
 using srrf.Interfaces;
 using srrf.Models;
+using srrf.Queries;
 
 namespace srrf.Repository
 {
@@ -36,9 +37,21 @@ namespace srrf.Repository
             return hardwareModel;
         }
 
-        public async Task<List<Hardware>> GetAllAsync()
+        public async Task<List<Hardware>> GetAllAsync(QueryHardware queryHardware)
         {
-            return await _context.Hardware.ToListAsync();
+            var hardware = _context.Hardware.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(queryHardware.NameOfHardware))
+            {
+                hardware = hardware.Where(h => h.Name.Contains(queryHardware.NameOfHardware));
+            }
+
+            if (!string.IsNullOrWhiteSpace(queryHardware.Descriptions))
+            {
+                hardware = hardware.Where(h => h.Description.Contains(queryHardware.Descriptions));
+            }
+
+            return await hardware.ToListAsync();
         }
 
         public async Task<Hardware?> GetByIdAsync(int id)

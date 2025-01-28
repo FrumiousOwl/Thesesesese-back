@@ -3,6 +3,7 @@ using srrf.Data;
 using srrf.Dto.User;
 using srrf.Interfaces;
 using srrf.Models;
+using srrf.Queries;
 
 namespace srrf.Repository
 {
@@ -35,9 +36,26 @@ namespace srrf.Repository
             return userToDelete;
         }
 
-        public async Task<List<User>> GetAllAsync()
+        public async Task<List<User>> GetAllAsync(QueryUser queryUser)
         {
-            return await _context.Users.ToListAsync();
+            var user = _context.Users.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(queryUser.FirstName)) 
+            {
+               user = user.Where(u => u.FirstName.Contains(queryUser.FirstName));
+            }
+
+            if (!string.IsNullOrWhiteSpace(queryUser.LastName))
+            {
+                user = user.Where(u => u.LastName.Contains(queryUser.LastName));
+            }
+
+            if (!string.IsNullOrWhiteSpace(queryUser.Email))
+            {
+                user = user.Where(u => u.Email.Contains(queryUser.Email));
+            }
+
+            return await user.ToListAsync();
         }
 
         public async Task<User?> GetByIdAsync(int userId)

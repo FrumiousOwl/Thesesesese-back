@@ -8,6 +8,7 @@ using srrf.Dto.User;
 using srrf.Interfaces;
 using srrf.Mapper;
 using srrf.Models;
+using srrf.Queries;
 
 namespace srrf.Controllers
 {
@@ -24,17 +25,23 @@ namespace srrf.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] QueryUser queryUser)
         {
-            var users = await _repository.GetAllAsync();
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var users = await _repository.GetAllAsync(queryUser);
             var userDto = users.Select(x => x.ToUserDto());
 
             return Ok(users);
         }
 
-        [HttpGet("{userId}")]
+        [HttpGet("{userId:int}")]
         public async Task<IActionResult> GetId(int userId)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var user = await _repository.GetByIdAsync(userId);
 
             if (user == null)
@@ -48,6 +55,9 @@ namespace srrf.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] UserCRUD createDto)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var userModel = createDto.CreateUserDto();
             await _repository.CreateAsync(userModel);
 
@@ -55,7 +65,7 @@ namespace srrf.Controllers
         }
 
         [HttpPut]
-        [Route("{userId}")]
+        [Route("{userId:int}")]
         public async Task<IActionResult> Update([FromRoute] int userId, [FromBody] UserCRUD updateDto)
         {
             if (!ModelState.IsValid)
@@ -72,9 +82,12 @@ namespace srrf.Controllers
         }
 
         [HttpDelete]
-        [Route("{userId}")]
+        [Route("{userId:int}")]
         public async Task<IActionResult> Delete([FromRoute] int userId)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var hardwareRequestModel = await _repository.DeleteAsync(userId);
 
             if (hardwareRequestModel == null)

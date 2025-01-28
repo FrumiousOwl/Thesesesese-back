@@ -7,6 +7,7 @@ using srrf.Dto.Hardware;
 using srrf.Interfaces;
 using srrf.Mapper;
 using srrf.Models;
+using srrf.Queries;
 
 namespace srrf.Controllers
 {
@@ -25,17 +26,27 @@ namespace srrf.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] QueryHardware queryHardware)
         {
-            var hardwares = await _repository.GetAllAsync();
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);  
+            }
+
+            var hardwares = await _repository.GetAllAsync(queryHardware);
             var hardwaresdto = hardwares.Select(h => h.ToHardwareDto());
 
             return Ok(hardwares);
         }
 
-        [HttpGet("{hardwareId}")]
+        [HttpGet("{hardwareId:int}")]
         public async Task<IActionResult> GetId(int hardwareId)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var hardware = await _repository.GetByIdAsync(hardwareId);
 
             if (hardware == null)
@@ -48,7 +59,12 @@ namespace srrf.Controllers
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] HardwareCUDDto createDto)
-        { 
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var hardwareModel = createDto.CreateHardwareDto();
             await _repository.CreateAsync(hardwareModel);
 
@@ -56,7 +72,7 @@ namespace srrf.Controllers
         }
 
         [HttpPut]
-        [Route("{hardwareId}")]
+        [Route("{hardwareId:int}")]
         public async Task<IActionResult> Update([FromRoute] int hardwareId, [FromBody] HardwareCUDDto updateDto)
         {
             if (!ModelState.IsValid)
@@ -73,9 +89,14 @@ namespace srrf.Controllers
         }
 
         [HttpDelete]
-        [Route("{hardwareId}")]
+        [Route("{hardwareId:int}")]
         public async Task<IActionResult> Delete([FromRoute] int hardwareId)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var hardwareModel = await _repository.DeleteAsync(hardwareId);
 
             if (hardwareModel == null)
