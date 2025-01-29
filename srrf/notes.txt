@@ -7,3 +7,10 @@
 -API request limiting
 -Input sanitation and validation
 -Password reset
+
+
+{
+  "userName": "BillieJeans",
+  "email": "Billyjeany@example.com",
+  "password": "Leav3MeA!0nE"
+}

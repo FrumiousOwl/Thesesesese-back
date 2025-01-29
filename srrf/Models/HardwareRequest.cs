@@ -16,8 +16,6 @@ namespace srrf.Models
         //Navigation
         public Hardware Hardware { get; set; } 
         public int HardwareId { get; set; }
-        public User User { get; set; } 
-        public int UserId { get; set; }
 
     }
 }

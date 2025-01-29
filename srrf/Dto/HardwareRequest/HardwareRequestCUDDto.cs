@@ -1,6 +1,4 @@
-﻿using srrf.Dto.Hardware;
-using srrf.Dto.User;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace srrf.Dto.HardwareRequest
 {
@@ -17,7 +15,6 @@ namespace srrf.Dto.HardwareRequest
         [Required]
         public string Problem { get; set; } = string.Empty;
         public bool IsFulfilled { get; set; }
-        public int UserId { get; set; }
         public int HardwareId { get; set; }
     }
 }

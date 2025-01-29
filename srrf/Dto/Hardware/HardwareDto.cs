@@ -1,5 +1,4 @@
 ﻿using srrf.Dto.HardwareRequest;
-using srrf.Dto.User;
 
 namespace srrf.Dto.Hardware
 {

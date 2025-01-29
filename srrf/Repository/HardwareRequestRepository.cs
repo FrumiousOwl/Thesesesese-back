@@ -60,7 +60,7 @@ namespace srrf.Repository
 
         public async Task<HardwareRequest?> GetByIdAsync(int id)
         {
-            return await _context.HardwareRequests.Include(h => h.Hardware).Include(u => u.User).FirstOrDefaultAsync(x => x.RequestId == id);
+            return await _context.HardwareRequests.Include(h => h.Hardware).FirstOrDefaultAsync(x => x.RequestId == id);
         }
 
         public async Task<HardwareRequest?> UpdateAsync(int id, HardwareRequestCUDDto hardwareRequestDto)
@@ -79,7 +79,7 @@ namespace srrf.Repository
             existRequest.IsFulfilled = hardwareRequestDto.IsFulfilled;
             existRequest.DateNeeded = hardwareRequestDto.DateNeeded;
             existRequest.HardwareId = hardwareRequestDto.HardwareId;
-            existRequest.UserId = hardwareRequestDto.UserId;
+
 
             await _context.SaveChangesAsync();
 

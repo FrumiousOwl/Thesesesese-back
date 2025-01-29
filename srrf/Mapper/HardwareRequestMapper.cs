@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using srrf.Models;
 using srrf.Dto.HardwareRequest;
 using srrf.Dto.Hardware;
-using srrf.Dto.User;
 
 namespace srrf.Mapper
 {
@@ -22,7 +21,6 @@ namespace srrf.Mapper
                 Problem = hardwareRequestModel.Problem,
                 DateNeeded = hardwareRequestModel.DateNeeded,
                 IsFulfilled = hardwareRequestModel.IsFulfilled,
-                UserId = hardwareRequestModel.UserId,
                 HardwareId = hardwareRequestModel.HardwareId
             };
         }
@@ -36,7 +34,6 @@ namespace srrf.Mapper
                 Problem = hardwareRequestDto.Problem,
                 DateNeeded = hardwareRequestDto.DateNeeded,
                 IsFulfilled = hardwareRequestDto.IsFulfilled,
-                UserId = hardwareRequestDto.UserId,
                 HardwareId = hardwareRequestDto.HardwareId/*,
                 UserDetails = hardwareRequestDto.UserDetails.Select(u => u.ToUserDto()).ToList(),
                 HardwareDetails = hardwareRequestDto.HardwareDetails.Select(h => h.ToHardwareDto()).ToList()

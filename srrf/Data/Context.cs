@@ -1,11 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using srrf.Models;
 using System.Text;
 
 namespace srrf.Data
 {
-    public class Context : DbContext
+    public class Context : IdentityDbContext<User>
     {
 
         public Context(DbContextOptions<Context> options) : base(options)
@@ -14,7 +16,6 @@ namespace srrf.Data
         }
         public DbSet<HardwareRequest> HardwareRequests { get; set; }
         public DbSet<Hardware> Hardware { get; set; }
-        public DbSet<User> Users { get; set; }
         public DbSet <AuditLog> AuditLogs { get; set; }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
@@ -59,14 +60,24 @@ namespace srrf.Data
             return changes.ToString();
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-
-        }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            
+            base.OnModelCreating(modelBuilder);
+
+            List<IdentityRole> roles = new List<IdentityRole>
+            {
+                new IdentityRole
+                {
+                    Name = "Admin",
+                    NormalizedName = "ADMIN",
+                },
+                new IdentityRole
+                {
+                    Name = "User",
+                    NormalizedName = "USER",
+                },
+            };
+            modelBuilder.Entity<IdentityRole>().HasData(roles);
         }
 
     }

@@ -8,7 +8,6 @@
         public string Problem { get; set; } = string.Empty;
         public DateTime DateNeeded { get; set; }
         public bool IsFulfilled { get; set; }
-        public int UserId { get; set; }
         public int HardwareId { get; set; }
     }
 }
