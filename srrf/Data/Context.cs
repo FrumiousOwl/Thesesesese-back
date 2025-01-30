@@ -64,7 +64,7 @@ namespace srrf.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            List<IdentityRole> roles = new List<IdentityRole>
+/*            List<IdentityRole> roles = new List<IdentityRole>
             {
                 new IdentityRole
                 {
@@ -77,7 +77,7 @@ namespace srrf.Data
                     NormalizedName = "USER",
                 },
             };
-            modelBuilder.Entity<IdentityRole>().HasData(roles);
+            modelBuilder.Entity<IdentityRole>().HasData(roles);*/
         }
 
     }
