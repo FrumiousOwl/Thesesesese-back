@@ -2,23 +2,29 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using System.Threading.Tasks;
 using srrf.Models;
+using System.Security.Claims;
 using System.Text;
 
 namespace srrf.Data
 {
     public class Context : IdentityDbContext<User>
     {
-
-        public Context(DbContextOptions<Context> options) : base(options)
+        private readonly IHttpContextAccessor _contextAccessor;
+        private readonly IServiceProvider _serviceProvider;
+        public Context(DbContextOptions<Context> options, 
+            IHttpContextAccessor contextAccessor,
+            IServiceProvider serviceProvider) : base(options)
         {
-
+            _contextAccessor = contextAccessor;
+            _serviceProvider = serviceProvider;
         }
         public DbSet<HardwareRequest> HardwareRequests { get; set; }
         public DbSet<Hardware> Hardware { get; set; }
         public DbSet <AuditLog> AuditLogs { get; set; }
 
-        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        public async override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
 
             var modifiedEntities = ChangeTracker.Entries()
@@ -27,10 +33,22 @@ namespace srrf.Data
                 || e.State == EntityState.Deleted)
                 .ToList();
 
+
+            var email = _contextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.Email)?.Value
+                 ?? _contextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            var userManager = _serviceProvider.GetRequiredService<UserManager<User>>();
+            
+            var user = await userManager.FindByEmailAsync(email);
+
+            var roles = await userManager.GetRolesAsync(user);
+
             foreach (var entity in modifiedEntities)
             {
                 var auditlog = new AuditLog
                 {
+                    Email = email,
+                    Role = string.Join(",", roles),
                     EntityName = entity.Entity.GetType().Name,
                     Action = entity.State.ToString(),
                     TimeStamp = DateTime.UtcNow,
@@ -40,7 +58,7 @@ namespace srrf.Data
                 AuditLogs.Add(auditlog);
             }
 
-            return base.SaveChangesAsync(cancellationToken);
+            return await base.SaveChangesAsync(cancellationToken);
         }
 
         private string GetChanges(EntityEntry entity)
@@ -64,20 +82,7 @@ namespace srrf.Data
         {
             base.OnModelCreating(modelBuilder);
 
-/*            List<IdentityRole> roles = new List<IdentityRole>
-            {
-                new IdentityRole
-                {
-                    Name = "Admin",
-                    NormalizedName = "ADMIN",
-                },
-                new IdentityRole
-                {
-                    Name = "User",
-                    NormalizedName = "USER",
-                },
-            };
-            modelBuilder.Entity<IdentityRole>().HasData(roles);*/
+
         }
 
     }

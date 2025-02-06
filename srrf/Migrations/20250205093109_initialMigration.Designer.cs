@@ -12,7 +12,7 @@ using srrf.Data;
 namespace srrf.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20250129091342_initialMigration")]
+    [Migration("20250205093109_initialMigration")]
     partial class initialMigration
     {
         /// <inheritdoc />
@@ -174,8 +174,14 @@ namespace srrf.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("EntityName")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Role")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("TimeStamp")

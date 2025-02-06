@@ -42,6 +42,7 @@ namespace srrf.Controllers
         }
 
         [HttpGet("{hardwareId:int}")]
+        [Authorize]
         public async Task<IActionResult> GetId(int hardwareId)
         {
             if (!ModelState.IsValid)
@@ -74,6 +75,7 @@ namespace srrf.Controllers
         }
 
         [HttpPut]
+        [Authorize]
         [Route("{hardwareId:int}")]
         public async Task<IActionResult> Update([FromRoute] int hardwareId, [FromBody] HardwareCUDDto updateDto)
         {
@@ -91,6 +93,7 @@ namespace srrf.Controllers
         }
 
         [HttpDelete]
+        [Authorize]
         [Route("{hardwareId:int}")]
         public async Task<IActionResult> Delete([FromRoute] int hardwareId)
         {

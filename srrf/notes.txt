@@ -1,16 +1,33 @@
-﻿-Need an autocomplete/search for client-side when typing a hardware name, the hardware name inputted will be searched if its exist within the database.
--Need password hashing and reset
+﻿-Need password hashing 
 -Encryption for some data
 -ML for finding anomaly
--database change history
--need to somehow convert DB change history to numerical values
--API request limiting
+-Database change history
 -Input sanitation and validation
--Password reset
 
 
+
+SystemManager
+{
+  "userName": "MouseRat",
+  "email": "Admin23qwxsq@gmail.com",
+  "password": "ae@335xddRiki#"
+}
+RequestManager
+{
+  "userName": "FallClown",
+  "email": "FallClown209@gmail.com",
+  "password": "FalC0n!3seee666^^^"
+}
+InventoryManager
 {
   "userName": "BillieJeans",
-  "email": "Billyjeany@example.com",
+  "email": "Billyjeanyzs@example.com",
   "password": "Leav3MeA!0nE"
 }
+User
+{
+  "userName": "Lulquid",
+  "email": "Lulquidiatez3@gmail.com",
+  "password": "niSht!nsaneeE21"
+}
+
