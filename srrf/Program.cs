@@ -25,6 +25,11 @@ builder.Services.AddCors(options =>
         });
 });
 
+builder.Services.AddControllers().AddNewtonsoftJson(options =>
+{
+    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+});
+
 //builder.Services.AddCors();
 builder.Services.AddDbContext<Context>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("Context")));
 builder.Services.AddIdentity<User, IdentityRole>(options =>

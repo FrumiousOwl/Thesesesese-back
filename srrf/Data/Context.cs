@@ -29,34 +29,70 @@ namespace srrf.Data
 
             var modifiedEntities = ChangeTracker.Entries()
                 .Where(e => e.State == EntityState.Modified
-                || e.State == EntityState.Added
-                || e.State == EntityState.Deleted)
+                            || e.State == EntityState.Added
+                            || e.State == EntityState.Deleted)
                 .ToList();
 
+            // Check if there is a logged-in user
+            var userPrincipal = _contextAccessor.HttpContext?.User;
+            string email = null;
+            string roles = null;
 
-            var email = _contextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.Email)?.Value
-                 ?? _contextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userPrincipal?.Identity?.IsAuthenticated == true)
+            {
 
-            var userManager = _serviceProvider.GetRequiredService<UserManager<User>>();
-            
-            var user = await userManager.FindByEmailAsync(email);
+                email = userPrincipal.FindFirst(ClaimTypes.Email)?.Value
+                        ?? userPrincipal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            var roles = await userManager.GetRolesAsync(user);
+                if (!string.IsNullOrEmpty(email))
+                {
+
+                    var userManager = _serviceProvider.GetRequiredService<UserManager<User>>();
+
+
+                    var user = await userManager.FindByEmailAsync(email);
+
+                    if (user != null)
+                    {
+
+                        var userRoles = await userManager.GetRolesAsync(user);
+
+
+                        if (userRoles == null || !userRoles.Any())
+                        {
+                            await userManager.AddToRoleAsync(user, "User");
+                            userRoles = new List<string> { "User" }; 
+                        }
+
+
+                        roles = string.Join(",", userRoles);
+                    }
+                }
+            }
+
+
+            if (string.IsNullOrEmpty(email))
+            {
+                email = "NewUserIgnore9182@gmail.com";
+                roles = "User"; 
+            }
+
 
             foreach (var entity in modifiedEntities)
             {
                 var auditlog = new AuditLog
                 {
                     Email = email,
-                    Role = string.Join(",", roles),
+                    Role = roles, 
                     EntityName = entity.Entity.GetType().Name,
                     Action = entity.State.ToString(),
-                    TimeStamp = DateTime.UtcNow,
+                    TimeStamp = DateTime.Now,
                     Changes = GetChanges(entity)
                 };
 
                 AuditLogs.Add(auditlog);
             }
+
 
             return await base.SaveChangesAsync(cancellationToken);
         }

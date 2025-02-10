@@ -26,8 +26,15 @@ InventoryManager
 }
 User
 {
-  "userName": "Lulquid",
-  "email": "Lulquidiatez3@gmail.com",
-  "password": "niSht!nsaneeE21"
+	[
+	  "userName": "Lulquid",
+	  "email": "Lulquidiatez3@gmail.com",
+	  "password": "niSht!nsaneeE21"
+	],
+	[
+	  "userName": "Tundraa",
+	  "email": "Turdra22@gmail.com",
+	  "password": "33Monch0B33m$ucksz@"
+	],
 }
 
