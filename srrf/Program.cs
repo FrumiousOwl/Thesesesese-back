@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using srrf.Data;
 using srrf.Interfaces;
+using srrf.MachineLearning;
 using srrf.Models;
 using srrf.Repository;
 using srrf.Service;
@@ -102,6 +103,8 @@ builder.Services.AddSwaggerGen(option =>
 builder.Services.AddScoped<IHardwareRepository, HardwareRepository>();
 builder.Services.AddScoped<IHardwareRequestRepository, HardwareRequestRepository>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IDataLoader, DataLoader>();
+builder.Services.AddScoped<AnomalyDetector>();
 
 var app = builder.Build();
 
