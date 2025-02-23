@@ -34,10 +34,7 @@ namespace srrf.Mapper
                 Problem = hardwareRequestDto.Problem,
                 DateNeeded = hardwareRequestDto.DateNeeded,
                 IsFulfilled = hardwareRequestDto.IsFulfilled,
-                HardwareId = hardwareRequestDto.HardwareId/*,
-                UserDetails = hardwareRequestDto.UserDetails.Select(u => u.ToUserDto()).ToList(),
-                HardwareDetails = hardwareRequestDto.HardwareDetails.Select(h => h.ToHardwareDto()).ToList()
-                */
+                HardwareId = hardwareRequestDto.HardwareId
             };
         }
 

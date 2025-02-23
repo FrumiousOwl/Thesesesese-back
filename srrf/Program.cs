@@ -33,6 +33,7 @@ builder.Services.AddControllers().AddNewtonsoftJson(options =>
 
 //builder.Services.AddCors();
 builder.Services.AddDbContext<Context>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("Context")));
+
 builder.Services.AddIdentity<User, IdentityRole>(options =>
 {
     options.Password.RequireDigit = true;
@@ -40,7 +41,9 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
     options.Password.RequireUppercase = true;
     options.Password.RequireNonAlphanumeric = true;
     options.Password.RequiredLength = 11;
-}).AddEntityFrameworkStores<Context>();
+})
+    .AddEntityFrameworkStores<Context>()
+    .AddDefaultTokenProviders();
 
 builder.Services.AddAuthentication(options =>
 {
@@ -102,9 +105,12 @@ builder.Services.AddSwaggerGen(option =>
 
 builder.Services.AddScoped<IHardwareRepository, HardwareRepository>();
 builder.Services.AddScoped<IHardwareRequestRepository, HardwareRequestRepository>();
+builder.Services.AddScoped<IUserRoleRepository, UserRoleRepository>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IDataLoader, DataLoader>();
 builder.Services.AddScoped<AnomalyDetector>();
+builder.Services.AddScoped<AuditLogMonitorService>();
+builder.Services.AddScoped<UserRoleService>();
 
 var app = builder.Build();
 

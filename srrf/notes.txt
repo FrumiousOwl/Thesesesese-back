@@ -36,5 +36,15 @@ User
 	  "email": "Turdra22@gmail.com",
 	  "password": "33Monch0B33m$ucksz@"
 	],
+	[
+	  "userName": "Glimmer",
+	  "email": "GlimmeringCapeyy@gmail.com",
+	  "password": "suPt0Glimm$r26Min_t33*ok"
+	],
+	[
+	  "userName": "Midas",
+	  "email": "BuggyMidas11@gmail.com",
+	  "password": "G0ldm**N3yyya!~"
+	],
 }
 

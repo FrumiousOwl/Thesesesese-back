@@ -40,6 +40,7 @@ namespace srrf.Controllers
                 {
                     UserName = user.UserName,
                     Email = user.Email,
+                    PhoneNumber = user.PhoneNumber,
                     Token = _tokenService.CreateToken(user)
                 }
             );
@@ -56,7 +57,8 @@ namespace srrf.Controllers
                 var appUser = new User
                 {
                     UserName = registerDto.UserName,
-                    Email = registerDto.Email
+                    Email = registerDto.Email,
+                    PhoneNumber = registerDto.PhoneNumber
                 };
 
                 var createdUser = await _userManager.CreateAsync(appUser, registerDto.Password);
@@ -71,6 +73,7 @@ namespace srrf.Controllers
                             {
                                 UserName = appUser.UserName,
                                 Email = appUser.Email,
+                                PhoneNumber = registerDto.PhoneNumber,
                                 Token = _tokenService.CreateToken(appUser)
                             }
                             );

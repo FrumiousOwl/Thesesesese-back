@@ -60,6 +60,49 @@ namespace srrf.Controllers
             return Ok(hardware.ToHardwareDto());
         }
 
+/*        [HttpGet("available/{hardwareId}")]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> GetHardwareAvaialbleStatus(int hardwareId)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var hardware = await _context.Hardware.FindAsync(hardwareId);
+
+            if (hardware == null)
+            {
+                return NotFound();
+            }
+
+            var hardwareStatusDto = new AvailableHardwareDto
+            {
+                HardwareId = hardware.HardwareId,
+                Name = hardware.Name,
+                Supplier = hardware.Supplier,
+                DatePurchased = hardware.DatePurchased,
+                Available = hardware.Defective,
+                Deployed = hardware.Deployed
+            };
+
+            return Ok(hardwareStatusDto);
+        }
+
+        [HttpGet("defective/{hardwareId}")]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> GetHardwareDefectiveStatus(int hardwareId)
+        {
+            var hardware = await _context.Hardware.FindAsync(hardwareId);
+
+            if (hardware == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(hardware.Defective);
+        }*/
+
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] HardwareCUDDto createDto)
         {
