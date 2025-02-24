@@ -17,6 +17,7 @@ namespace srrf.Controllers
         }
 
         [HttpGet("all")]
+        //[Authorize]
         public async Task<IActionResult> GetAllUserRoles()
         {
             var userRoles = await _userRoleService.GetAllUserRolesAsync();
@@ -24,6 +25,7 @@ namespace srrf.Controllers
         }
 
         [HttpPost("update")]
+        //[Authorize]
         public async Task<IActionResult> UpdateUserRole([FromBody] UpdateUserRoleDto request)
         {
             var success = await _userRoleService.ChangeUserRoleAsync(request.UserId, request.NewRole);

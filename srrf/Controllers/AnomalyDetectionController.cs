@@ -19,6 +19,7 @@ namespace srrf.Controllers
         }
 
         [HttpPost("detectAnomalies")]
+        //[Authorize]
         public IActionResult DetectAnomalies()
         {
             _detector.TrainAndDetectAnomalies();

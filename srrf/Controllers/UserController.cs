@@ -18,6 +18,7 @@ namespace srrf.Controllers
         }
 
         [HttpGet]
+        //[Authorize]
         public async Task<ActionResult<IEnumerable<User>>> GetAllUsers()
         {
             var users = _userManager.Users.ToList();
@@ -36,6 +37,7 @@ namespace srrf.Controllers
         }
 
         [HttpPut("{id}")]
+        //[Authorize]
         public async Task<IActionResult> UpdateUser(string id, [FromBody] User updatedUser)
         {
             var user = await _userManager.FindByIdAsync(id);
@@ -56,6 +58,7 @@ namespace srrf.Controllers
         }
 
         [HttpDelete("{id}")]
+        //[Authorize]
         public async Task<IActionResult> DeleteUser(string id)
         {
             var user = await _userManager.FindByIdAsync(id);

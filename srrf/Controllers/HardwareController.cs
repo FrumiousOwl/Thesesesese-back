@@ -27,7 +27,7 @@ namespace srrf.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        //[Authorize]
         public async Task<IActionResult> GetAll([FromQuery] QueryHardware queryHardware)
         {
             if (!ModelState.IsValid)
@@ -42,7 +42,7 @@ namespace srrf.Controllers
         }
 
         [HttpGet("{hardwareId:int}")]
-        [Authorize]
+        //[Authorize]
         public async Task<IActionResult> GetId(int hardwareId)
         {
             if (!ModelState.IsValid)
@@ -60,50 +60,65 @@ namespace srrf.Controllers
             return Ok(hardware.ToHardwareDto());
         }
 
-/*        [HttpGet("available/{hardwareId}")]
+        [HttpGet("available/getAllAvailableHardware")]
+        //[Authorize]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> GetHardwareAvaialbleStatus(int hardwareId)
+        public async Task<IActionResult> GetHardwareAvailableStatus()
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return BadRequest(ModelState);
+                var availableHardware = await _context.Hardware
+                    .Where(h => h.Available > 0) 
+                    .Select(h => new AvailableHardwareDto
+                    {
+                        HardwareId = h.HardwareId,
+                        Name = h.Name,
+                        Available = h.Available,
+                        Deployed = h.Deployed,
+                        DatePurchased = h.DatePurchased,
+                        Supplier = h.Supplier
+                    })
+                    .ToListAsync();
+
+                return Ok(availableHardware);
             }
-
-            var hardware = await _context.Hardware.FindAsync(hardwareId);
-
-            if (hardware == null)
+            catch (Exception ex)
             {
-                return NotFound();
+                return BadRequest($"An error occurred: {ex.Message}");
             }
-
-            var hardwareStatusDto = new AvailableHardwareDto
-            {
-                HardwareId = hardware.HardwareId,
-                Name = hardware.Name,
-                Supplier = hardware.Supplier,
-                DatePurchased = hardware.DatePurchased,
-                Available = hardware.Defective,
-                Deployed = hardware.Deployed
-            };
-
-            return Ok(hardwareStatusDto);
         }
 
-        [HttpGet("defective/{hardwareId}")]
+        [HttpGet("defective/getAllDefectiveHardware")]
+        //[Authorize]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> GetHardwareDefectiveStatus(int hardwareId)
+        public async Task<IActionResult> GetHardwareDefectiveStatus()
         {
-            var hardware = await _context.Hardware.FindAsync(hardwareId);
-
-            if (hardware == null)
+            try
             {
-                return NotFound();
-            }
+                var defectiveHardware = await _context.Hardware
+                    .Where(h => h.Defective > 0)
+                    .Select(h => new DefectiveHardwareDto
+                    {
+                        HardwareId = h.HardwareId,
+                        Name = h.Name,
+                        Defective = h.Defective,
+                        DatePurchased = h.DatePurchased,
+                        Supplier = h.Supplier
+                    })
+                    .ToListAsync();
 
-            return Ok(hardware.Defective);
-        }*/
+                return Ok(defectiveHardware);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"An error occurred: {ex.Message}");
+            }
+        }
+
+
 
         [HttpPost]
+        //[Authorize]
         public async Task<IActionResult> Create([FromBody] HardwareCUDDto createDto)
         {
             if (!ModelState.IsValid)
@@ -118,7 +133,7 @@ namespace srrf.Controllers
         }
 
         [HttpPut]
-        [Authorize]
+        //[Authorize]
         [Route("{hardwareId:int}")]
         public async Task<IActionResult> Update([FromRoute] int hardwareId, [FromBody] HardwareCUDDto updateDto)
         {
@@ -136,7 +151,7 @@ namespace srrf.Controllers
         }
 
         [HttpDelete]
-        [Authorize]
+        //[Authorize]
         [Route("{hardwareId:int}")]
         public async Task<IActionResult> Delete([FromRoute] int hardwareId)
         {

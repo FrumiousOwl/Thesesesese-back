@@ -26,7 +26,7 @@ namespace srrf.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        //[Authorize]
         public async Task<IActionResult> GetAll([FromQuery] QueryRequestz query)
         {
             if (!ModelState.IsValid)
@@ -39,7 +39,7 @@ namespace srrf.Controllers
         }
 
         [HttpGet("{hardwareRequestId:int}")]
-        [Authorize]
+        //[Authorize]
         public async Task<IActionResult> GetId(int hardwareRequestId)
         {
             if (!ModelState.IsValid)
@@ -56,7 +56,7 @@ namespace srrf.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        //[Authorize]
         public async Task<IActionResult> Create([FromBody] HardwareRequestCUDDto createDto)
         {
             if (!ModelState.IsValid)
@@ -69,7 +69,7 @@ namespace srrf.Controllers
         }
 
         [HttpPut]
-        [Authorize]
+        //[Authorize]
         [Route("{hardwareRequestId:int}")]
         public async Task<IActionResult> Update([FromRoute] int hardwareRequestId, [FromBody] HardwareRequestCUDDto updateDto)
         {
@@ -87,7 +87,7 @@ namespace srrf.Controllers
         }
 
         [HttpDelete]
-        [Authorize]
+        //[Authorize]
         [Route("{hardwareRequestId:int}")]
         public async Task<IActionResult> Delete([FromRoute] int hardwareRequestId)
         {
