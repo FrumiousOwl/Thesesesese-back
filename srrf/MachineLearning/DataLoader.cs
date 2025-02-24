@@ -13,8 +13,7 @@ namespace srrf.MachineLearning
 
         public List<AuditLogModel> GetAuditLogData()
         {
-            return _context.AuditLogs
-                .Where(a => a.EntityName == "User" || a.EntityName == "Request" || a.EntityName == "Hardware")
+            var logs = _context.AuditLogs
                 .Select(a => new AuditLogModel
                 {
                     Email = a.Email,
@@ -23,6 +22,15 @@ namespace srrf.MachineLearning
                     Action = a.Action
                 })
                 .ToList();
+
+            // Ensure training data includes valid SystemManager actions
+            logs.Add(new AuditLogModel { Email = "admin@example.com", Role = "SystemManager", EntityName = "User", Action = "Modify" });
+            logs.Add(new AuditLogModel { Email = "admin@example.com", Role = "SystemManager", EntityName = "User", Action = "Delete" });
+            logs.Add(new AuditLogModel { Email = "admin@example.com", Role = "SystemManager", EntityName = "IdentityUserRole`1", Action = "Modify" });
+            logs.Add(new AuditLogModel { Email = "admin@example.com", Role = "SystemManager", EntityName = "IdentityUserRole`1", Action = "Delete" });
+
+            return logs;
         }
+
     }
 }

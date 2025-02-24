@@ -107,10 +107,12 @@ builder.Services.AddScoped<IHardwareRepository, HardwareRepository>();
 builder.Services.AddScoped<IHardwareRequestRepository, HardwareRequestRepository>();
 builder.Services.AddScoped<IUserRoleRepository, UserRoleRepository>();
 builder.Services.AddScoped<ITokenService, TokenService>();
-builder.Services.AddScoped<IDataLoader, DataLoader>();
-builder.Services.AddScoped<AnomalyDetector>();
-builder.Services.AddScoped<AuditLogMonitorService>();
 builder.Services.AddScoped<UserRoleService>();
+
+//ML Services
+builder.Services.AddScoped<IDataLoader, DataLoader>();
+builder.Services.AddSingleton<AnomalyDetector>();
+builder.Services.AddHostedService<AuditLogMonitorService>();
 
 var app = builder.Build();
 

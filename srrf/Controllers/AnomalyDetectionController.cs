@@ -1,20 +1,24 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using srrf.Data;
 using srrf.MachineLearning;
 
 namespace srrf.Controllers
 {
+    [Route("api/anomalyDetector")]
     [ApiController]
-    [Route("api/anomalydetection")]
+
     public class AnomalyDetectionController : ControllerBase
     {
         private readonly AnomalyDetector _detector;
+        private readonly Context _context;
 
-        public AnomalyDetectionController(AnomalyDetector detector)
+        public AnomalyDetectionController(AnomalyDetector detector, Context context)
         {
             _detector = detector;
+            _context = context;
         }
 
-        [HttpGet("detect")]
+        [HttpPost("detectAnomalies")]
         public IActionResult DetectAnomalies()
         {
             _detector.TrainAndDetectAnomalies();

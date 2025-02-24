@@ -7,69 +7,47 @@ namespace srrf.MachineLearning
 {
     public class AuditLogMonitorService : BackgroundService
     {
-        private readonly IServiceScopeFactory _serviceScopeFactory;
+        private readonly IServiceScopeFactory _scopeFactory;
         private readonly AnomalyDetector _anomalyDetector;
         private int _lastProcessedId = 0;
 
-        public AuditLogMonitorService(IServiceScopeFactory serviceScopeFactory, AnomalyDetector anomalyDetector)
+        public AuditLogMonitorService(IServiceScopeFactory scopeFactory, AnomalyDetector anomalyDetector)
         {
-            _serviceScopeFactory = serviceScopeFactory;
+            _scopeFactory = scopeFactory;
             _anomalyDetector = anomalyDetector;
         }
 
-        protected override async Task ExecuteAsync(CancellationToken cancellationToken)
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            while (!cancellationToken.IsCancellationRequested)
+            while (!stoppingToken.IsCancellationRequested)
             {
-                using (var scope = _serviceScopeFactory.CreateScope())
+                using (var scope = _scopeFactory.CreateScope())
                 {
-                    var context = scope.ServiceProvider.GetRequiredService<Context>();
-                
-                    
-                    var newLogs = await context.AuditLogs
-                        .Where(log =>  log.Id > _lastProcessedId)
+                    var dbContext = scope.ServiceProvider.GetRequiredService<Context>();
+                    var latestLogs = await dbContext.AuditLogs
+                        .Where(log => log.Id > _lastProcessedId)
                         .OrderBy(log => log.Id)
-                        .ToListAsync();
+                        .ToListAsync(stoppingToken);
 
-                    if (newLogs.Any())
+                    foreach (var log in latestLogs)
                     {
-                        foreach (var log in newLogs)
+
+                        var auditLogModel = new AuditLogModel
                         {
-                            var auditLogModel = new AuditLogModel
-                            {
-                                Email = log.Email,
-                                Role = log.Role,
-                                EntityName = log.EntityName,
-                                Action = log.Action
-                            };
+                            Email = log.Email,
+                            Role = log.Role,
+                            EntityName = log.EntityName,
+                            Action = log.Action
+                        };
 
-                            var prediction = _anomalyDetector.Predict(auditLogModel);
+                        bool isAnomalous = _anomalyDetector.Predict(auditLogModel);
+                        Console.WriteLine($"Email: {log.Email}, Role: {log.Role}, Entity: {log.EntityName}, Action: {log.Action}, Anomalous: {isAnomalous}");
 
-
-                            Console.WriteLine($"Email: {log.Email}, Role: {log.Role}, Entity: {log.EntityName}, Action: {log.Action}, Prediction (Anomaly?): {prediction.Prediction}");
-
-                            //test
-                            /*if (prediction.Prediction)
-                            {
-                                var anomaly = new AnomalyLog
-                                {
-                                    Email = log.Email,
-                                    Role = log.Role,
-                                    EntityName = log.EntityName,
-                                    Action = log.Action,
-                                    Timestamp = DateTime.Now
-                                };
-
-                                dbContext.AnomalyLogs.Add(anomaly);
-                                await dbContext.SaveChangesAsync();
-                            }*/
-                        }
-
-                        _lastProcessedId = newLogs.Max(log => log.Id);
+                        _lastProcessedId = log.Id; 
                     }
                 }
 
-                await Task.Delay(5000, cancellationToken);
+                await Task.Delay(30000, stoppingToken); // Check every 10 seconds
             }
         }
     }
