@@ -11,20 +11,24 @@ SystemManager
   "userName": "MouseRat",
   "email": "Admin23qwxsq@gmail.com",
   "password": "ae@335xddRiki#"
+  "PhoneNumber": "09238322296"
 }
+
 RequestManager
 {
-  "userName": "FallClown",
-  "email": "FallClown209@gmail.com",
-  "password": "FalC0n!3seee666^^^"
+	[
+	  "userName": "Tundraa",
+	  "email": "Turdra22@gmail.com",
+	  "password": "33Monch0B33m$ucksz@"
+	],
+	[
+	  "userName": "FallClown",
+	  "email": "FallClown209@gmail.com",
+	  "password": "FalC0n!3seee666^^^"
+	]
 }
+
 InventoryManager
-{
-  "userName": "BillieJeans",
-  "email": "Billyjeanyzs@example.com",
-  "password": "Leav3MeA!0nE"
-}
-User
 {
 	[
 	  "userName": "Lulquid",
@@ -32,10 +36,14 @@ User
 	  "password": "niSht!nsaneeE21"
 	],
 	[
-	  "userName": "Tundraa",
-	  "email": "Turdra22@gmail.com",
-	  "password": "33Monch0B33m$ucksz@"
-	],
+	  "userName": "BillieJeans",
+	  "email": "Billyjeanyzs@example.com",
+	  "password": "Leav3MeA!0nE"
+	]
+}
+
+User
+{
 	[
 	  "userName": "Glimmer",
 	  "email": "GlimmeringCapeyy@gmail.com",

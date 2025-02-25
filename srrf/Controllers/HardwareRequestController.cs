@@ -69,7 +69,7 @@ namespace srrf.Controllers
         }
 
         [HttpPut]
-        //[Authorize]
+        //[Authorize(Roles = "Request Manager")]
         [Route("{hardwareRequestId:int}")]
         public async Task<IActionResult> Update([FromRoute] int hardwareRequestId, [FromBody] HardwareRequestCUDDto updateDto)
         {
@@ -87,7 +87,7 @@ namespace srrf.Controllers
         }
 
         [HttpDelete]
-        //[Authorize]
+        //[Authorize(Roles = "Request Manager")]
         [Route("{hardwareRequestId:int}")]
         public async Task<IActionResult> Delete([FromRoute] int hardwareRequestId)
         {

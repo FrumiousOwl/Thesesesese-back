@@ -118,7 +118,7 @@ namespace srrf.Controllers
 
 
         [HttpPost]
-        //[Authorize]
+        //[Authorize(Roles = "Inventory Manager")]
         public async Task<IActionResult> Create([FromBody] HardwareCUDDto createDto)
         {
             if (!ModelState.IsValid)
@@ -133,7 +133,7 @@ namespace srrf.Controllers
         }
 
         [HttpPut]
-        //[Authorize]
+        [Authorize]
         [Route("{hardwareId:int}")]
         public async Task<IActionResult> Update([FromRoute] int hardwareId, [FromBody] HardwareCUDDto updateDto)
         {
@@ -151,7 +151,7 @@ namespace srrf.Controllers
         }
 
         [HttpDelete]
-        //[Authorize]
+        //[Authorize(Roles = "Inventory Manager")]
         [Route("{hardwareId:int}")]
         public async Task<IActionResult> Delete([FromRoute] int hardwareId)
         {

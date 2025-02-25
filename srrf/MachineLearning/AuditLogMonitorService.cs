@@ -40,6 +40,12 @@ namespace srrf.MachineLearning
                             Action = log.Action
                         };
 
+/*                        if (IsAllowedAction(auditLogModel))
+                        {
+                            Console.WriteLine($"✅ Allowed action: {log.Role} {log.Action} on {log.EntityName} (Skipping anomaly check)");
+                            return; 
+                        }*/
+
                         bool isAnomalous = _anomalyDetector.Predict(auditLogModel);
                         Console.WriteLine($"Email: {log.Email}, Role: {log.Role}, Entity: {log.EntityName}, Action: {log.Action}, Anomalous: {isAnomalous}");
 
@@ -47,8 +53,15 @@ namespace srrf.MachineLearning
                     }
                 }
 
-                await Task.Delay(30000, stoppingToken); // Check every 10 seconds
+                await Task.Delay(20000, stoppingToken); // Check every 20 seconds
             }
         }
+
+/*        private bool IsAllowedAction(AuditLogModel log)
+        {
+            return (log.Role == "RequestManager" && log.EntityName == "Request" && log.Action == "Deleted") ||
+                   (log.Role == "InventoryManager" && log.EntityName == "Hardware" && log.Action == "Deleted");
+        }*/
+
     }
 }

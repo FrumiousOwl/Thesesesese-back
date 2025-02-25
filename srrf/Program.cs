@@ -16,7 +16,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 // Add services to the container.
-var frontendUrl = "http://localhost:5175/";
+var frontendUrl = "http://localhost:5173/";
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("ReactPolicy",
@@ -51,8 +51,15 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
 var jwtSettings = builder.Configuration.GetSection("JWT");
 var key = Encoding.UTF8.GetBytes(jwtSettings["SigningKey"] ?? throw new InvalidOperationException("JWT Signing Key is missing"));
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
+builder.Services.AddAuthentication(options =>
+{
+        options.DefaultAuthenticateScheme =
+        options.DefaultChallengeScheme =
+        options.DefaultForbidScheme =
+        options.DefaultScheme =
+        options.DefaultSignInScheme =
+        options.DefaultSignOutScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
     {
         options.Events = new JwtBearerEvents
         {
@@ -129,6 +136,7 @@ builder.Services.AddSwaggerGen(option =>
 builder.Services.AddScoped<IHardwareRepository, HardwareRepository>();
 builder.Services.AddScoped<IHardwareRequestRepository, HardwareRequestRepository>();
 builder.Services.AddScoped<IUserRoleRepository, UserRoleRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<UserRoleService>();
 

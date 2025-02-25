@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using srrf.Dto.Account;
 using srrf.Service;
 
 namespace srrf.Controllers
 {
+    //[Authorize(Roles = ("System Manager"))]
     [Route("api/user-role")]
     [ApiController]
     public class UserRoleController : ControllerBase
@@ -17,7 +19,7 @@ namespace srrf.Controllers
         }
 
         [HttpGet("all")]
-        //[Authorize]
+
         public async Task<IActionResult> GetAllUserRoles()
         {
             var userRoles = await _userRoleService.GetAllUserRolesAsync();
@@ -25,7 +27,7 @@ namespace srrf.Controllers
         }
 
         [HttpPost("update")]
-        //[Authorize]
+
         public async Task<IActionResult> UpdateUserRole([FromBody] UpdateUserRoleDto request)
         {
             var success = await _userRoleService.ChangeUserRoleAsync(request.UserId, request.NewRole);

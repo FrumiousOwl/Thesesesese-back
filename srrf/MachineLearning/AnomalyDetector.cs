@@ -33,7 +33,7 @@ namespace srrf.MachineLearning
                     .Append(_mlContext.Transforms.Categorical.OneHotEncoding("EntityEncoded", "EntityName"))
                     .Append(_mlContext.Transforms.Categorical.OneHotEncoding("ActionEncoded", "Action"))
                     .Append(_mlContext.Transforms.Concatenate("Features", "RoleEncoded", "EntityEncoded", "ActionEncoded"))
-                    .Append(_mlContext.AnomalyDetection.Trainers.RandomizedPca(featureColumnName: "Features", rank: 2));
+                    .Append(_mlContext.AnomalyDetection.Trainers.RandomizedPca(featureColumnName: "Features", rank: 4));
 
                 _model = pipeline.Fit(dataView);
             }

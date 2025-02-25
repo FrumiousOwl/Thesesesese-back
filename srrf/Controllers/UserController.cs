@@ -1,77 +1,56 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using srrf.Dto.Account;
+using srrf.Interfaces;
 using srrf.Models;
+using srrf.Queries;
 using srrf.Service;
 
 namespace srrf.Controllers
 {
-    [Route("api/[controller]")]
+    //[Authorize(Roles = "System Manager")]
     [ApiController]
+    [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
-        private readonly UserManager<User> _userManager;
-        
-        public UserController(UserManager<User> userManager)
+        private readonly IUserRepository _userRepository;
+
+        public UserController(IUserRepository userRepository)
         {
-            _userManager = userManager;
+            _userRepository = userRepository;
         }
 
         [HttpGet]
-        //[Authorize]
-        public async Task<ActionResult<IEnumerable<User>>> GetAllUsers()
+        public async Task<ActionResult<IEnumerable<UsersDto>>> GetAllUsers([FromQuery] QueryUser query)
         {
-            var users = _userManager.Users.ToList();
+            var users = await _userRepository.GetAllUsersAsync(query);
+
             return Ok(users);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUserById(string id)
+        public async Task<ActionResult<UsersDto>> GetUserById(string id)
         {
-            var user = await _userManager.FindByIdAsync(id);
-            if (user == null)
-            {
-                return NotFound();
-            }
+            var user = await _userRepository.GetUserByIdAsync(id);
+            if (user == null) return NotFound();
             return Ok(user);
         }
 
         [HttpPut("{id}")]
-        //[Authorize]
-        public async Task<IActionResult> UpdateUser(string id, [FromBody] User updatedUser)
+        public async Task<IActionResult> UpdateUser(string id, [FromBody] UpdateUsersDto updateUser)
         {
-            var user = await _userManager.FindByIdAsync(id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            user.Email = updatedUser.Email;
-            user.UserName = updatedUser.UserName;
-
-            var result = await _userManager.UpdateAsync(user);
-            if (!result.Succeeded)
-            {
-                return BadRequest(result.Errors);
-            }
+            var success = await _userRepository.UpdateUserAsync(id, updateUser);
+            if (!success) return NotFound();
             return NoContent();
         }
 
         [HttpDelete("{id}")]
-        //[Authorize]
+        
         public async Task<IActionResult> DeleteUser(string id)
         {
-            var user = await _userManager.FindByIdAsync(id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            var result = await _userManager.DeleteAsync(user);
-            if (!result.Succeeded)
-            {
-                return BadRequest(result.Errors);
-            }
+            var success = await _userRepository.DeleteUserAsync(id);
+            if (!success) return NotFound();
             return NoContent();
         }
     }
