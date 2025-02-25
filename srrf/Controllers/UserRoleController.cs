@@ -6,7 +6,7 @@ using srrf.Service;
 
 namespace srrf.Controllers
 {
-    //[Authorize(Roles = ("System Manager"))]
+    [Authorize]
     [Route("api/user-role")]
     [ApiController]
     public class UserRoleController : ControllerBase

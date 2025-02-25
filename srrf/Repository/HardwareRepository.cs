@@ -54,9 +54,58 @@ namespace srrf.Repository
             return await hardware.ToListAsync();
         }
 
+        public async Task<IEnumerable<AvailableHardwareDto>> GetAvailableHardwareAsync(QueryAvailableHardware query)
+        {
+            var availableHardware = _context.Hardware
+            .Where(h => h.Available > 0);
+
+            if (!string.IsNullOrEmpty(query.Descriptions))
+            {
+                availableHardware = availableHardware.Where(h => h.Description.Contains(query.Descriptions));
+            }
+            if (!string.IsNullOrEmpty(query.NameOfHardware))
+            {
+                availableHardware = availableHardware.Where(h => h.Name.Contains(query.NameOfHardware));
+            }
+
+            return await availableHardware.Select(h => new AvailableHardwareDto
+            {
+                HardwareId = h.HardwareId,
+                Name = h.Name,
+                Available = h.Available,
+                Deployed = h.Deployed,
+                DatePurchased = h.DatePurchased,
+                Supplier = h.Supplier
+            }).ToListAsync();
+        }
+
         public async Task<Hardware?> GetByIdAsync(int id)
         {
             return await _context.Hardware.FindAsync(id);
+        }
+
+        public async Task<IEnumerable<DefectiveHardwareDto>> GetDefectiveHardwareAsync(QueryDefectiveHardware query)
+        {
+            var defectiveHardware = _context.Hardware
+            .Where(h => h.Defective > 0);
+
+            if (!string.IsNullOrEmpty(query.Descriptions))
+            {
+                defectiveHardware = defectiveHardware.Where(h => h.Description.Contains(query.Descriptions));
+            }
+            if (!string.IsNullOrEmpty(query.NameOfHardware))
+            {
+                defectiveHardware = defectiveHardware.Where(h => h.Name.Contains(query.NameOfHardware));
+            }
+
+            return await defectiveHardware.Select(h => new DefectiveHardwareDto
+            {
+                HardwareId = h.HardwareId,
+                Name = h.Name,
+                Defective = h.Defective,
+                DatePurchased = h.DatePurchased,
+                Supplier = h.Supplier
+            }).ToListAsync();
         }
 
         public async Task<Hardware?> UpdateAsync(int id, HardwareCUDDto hardwareDto)

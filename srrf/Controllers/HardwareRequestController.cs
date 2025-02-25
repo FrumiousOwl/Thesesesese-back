@@ -12,6 +12,7 @@ using srrf.Queries;
 
 namespace srrf.Controllers
 {
+    //[Authorize]
     [Route("api/HardwareRequest")]
     [ApiController]
     public class HardwareRequestController : ControllerBase
@@ -26,7 +27,6 @@ namespace srrf.Controllers
         }
 
         [HttpGet]
-        //[Authorize]
         public async Task<IActionResult> GetAll([FromQuery] QueryRequestz query)
         {
             if (!ModelState.IsValid)
@@ -39,7 +39,6 @@ namespace srrf.Controllers
         }
 
         [HttpGet("{hardwareRequestId:int}")]
-        //[Authorize]
         public async Task<IActionResult> GetId(int hardwareRequestId)
         {
             if (!ModelState.IsValid)
@@ -56,7 +55,6 @@ namespace srrf.Controllers
         }
 
         [HttpPost]
-        //[Authorize]
         public async Task<IActionResult> Create([FromBody] HardwareRequestCUDDto createDto)
         {
             if (!ModelState.IsValid)
@@ -69,7 +67,6 @@ namespace srrf.Controllers
         }
 
         [HttpPut]
-        //[Authorize(Roles = "Request Manager")]
         [Route("{hardwareRequestId:int}")]
         public async Task<IActionResult> Update([FromRoute] int hardwareRequestId, [FromBody] HardwareRequestCUDDto updateDto)
         {
@@ -87,7 +84,6 @@ namespace srrf.Controllers
         }
 
         [HttpDelete]
-        //[Authorize(Roles = "Request Manager")]
         [Route("{hardwareRequestId:int}")]
         public async Task<IActionResult> Delete([FromRoute] int hardwareRequestId)
         {

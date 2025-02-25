@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using srrf.Data;
 using srrf.MachineLearning;
 
 namespace srrf.Controllers
 {
-    //[Authorize(Roles = "Inventory Manager")]
+    //[Authorize]
     [Route("api/anomalyDetector")]
     [ApiController]
 

@@ -9,6 +9,7 @@ using srrf.Interfaces;
 using srrf.Mapper;
 using srrf.Models;
 using srrf.Queries;
+using srrf.Repository;
 
 namespace srrf.Controllers
 {
@@ -27,7 +28,6 @@ namespace srrf.Controllers
         }
 
         [HttpGet]
-        //[Authorize]
         public async Task<IActionResult> GetAll([FromQuery] QueryHardware queryHardware)
         {
             if (!ModelState.IsValid)
@@ -42,7 +42,6 @@ namespace srrf.Controllers
         }
 
         [HttpGet("{hardwareId:int}")]
-        //[Authorize]
         public async Task<IActionResult> GetId(int hardwareId)
         {
             if (!ModelState.IsValid)
@@ -61,25 +60,12 @@ namespace srrf.Controllers
         }
 
         [HttpGet("available/getAllAvailableHardware")]
-        //[Authorize]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> GetHardwareAvailableStatus()
+        public async Task<IActionResult> GetAvailableHardware([FromQuery] QueryAvailableHardware query)
         {
             try
             {
-                var availableHardware = await _context.Hardware
-                    .Where(h => h.Available > 0) 
-                    .Select(h => new AvailableHardwareDto
-                    {
-                        HardwareId = h.HardwareId,
-                        Name = h.Name,
-                        Available = h.Available,
-                        Deployed = h.Deployed,
-                        DatePurchased = h.DatePurchased,
-                        Supplier = h.Supplier
-                    })
-                    .ToListAsync();
-
+                var availableHardware = await _repository.GetAvailableHardwareAsync(query);
                 return Ok(availableHardware);
             }
             catch (Exception ex)
@@ -89,24 +75,12 @@ namespace srrf.Controllers
         }
 
         [HttpGet("defective/getAllDefectiveHardware")]
-        //[Authorize]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> GetHardwareDefectiveStatus()
+        public async Task<IActionResult> GetDefectiveHardware([FromQuery] QueryDefectiveHardware query)
         {
             try
             {
-                var defectiveHardware = await _context.Hardware
-                    .Where(h => h.Defective > 0)
-                    .Select(h => new DefectiveHardwareDto
-                    {
-                        HardwareId = h.HardwareId,
-                        Name = h.Name,
-                        Defective = h.Defective,
-                        DatePurchased = h.DatePurchased,
-                        Supplier = h.Supplier
-                    })
-                    .ToListAsync();
-
+                var defectiveHardware = await _repository.GetDefectiveHardwareAsync(query);
                 return Ok(defectiveHardware);
             }
             catch (Exception ex)
@@ -116,9 +90,7 @@ namespace srrf.Controllers
         }
 
 
-
         [HttpPost]
-        //[Authorize(Roles = "Inventory Manager")]
         public async Task<IActionResult> Create([FromBody] HardwareCUDDto createDto)
         {
             if (!ModelState.IsValid)
@@ -151,7 +123,6 @@ namespace srrf.Controllers
         }
 
         [HttpDelete]
-        //[Authorize(Roles = "Inventory Manager")]
         [Route("{hardwareId:int}")]
         public async Task<IActionResult> Delete([FromRoute] int hardwareId)
         {
