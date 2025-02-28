@@ -27,6 +27,7 @@ namespace srrf.Controllers
             _repository = repository;
         }
 
+        [Authorize(Roles = "InventoryManager, RequestManager, SystemManager")]
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] QueryHardware queryHardware)
         {
@@ -59,6 +60,7 @@ namespace srrf.Controllers
             return Ok(hardware.ToHardwareDto());
         }
 
+        [Authorize(Roles = "InventoryManager, RequestManager, SystemManager")]
         [HttpGet("available/getAllAvailableHardware")]
         [ProducesResponseType(400)]
         public async Task<IActionResult> GetAvailableHardware([FromQuery] QueryAvailableHardware query)
@@ -74,6 +76,7 @@ namespace srrf.Controllers
             }
         }
 
+        [Authorize(Roles = "InventoryManager, RequestManager, SystemManager")]
         [HttpGet("defective/getAllDefectiveHardware")]
         [ProducesResponseType(400)]
         public async Task<IActionResult> GetDefectiveHardware([FromQuery] QueryDefectiveHardware query)
@@ -89,7 +92,7 @@ namespace srrf.Controllers
             }
         }
 
-
+        [Authorize(Roles = "InventoryManager")]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] HardwareCUDDto createDto)
         {
@@ -105,7 +108,7 @@ namespace srrf.Controllers
         }
 
         [HttpPut]
-        [Authorize]
+        [Authorize(Roles = "InventoryManager")]
         [Route("{hardwareId:int}")]
         public async Task<IActionResult> Update([FromRoute] int hardwareId, [FromBody] HardwareCUDDto updateDto)
         {
@@ -122,6 +125,7 @@ namespace srrf.Controllers
             return Ok(hardwareModel.ToHardwareDto());
         }
 
+        [Authorize(Roles = "InventoryManager")]
         [HttpDelete]
         [Route("{hardwareId:int}")]
         public async Task<IActionResult> Delete([FromRoute] int hardwareId)

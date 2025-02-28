@@ -10,13 +10,14 @@ using srrf.MachineLearning;
 using srrf.Models;
 using srrf.Repository;
 using srrf.Service;
+using System.Security.Claims;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 
 // Add services to the container.
-var frontendUrl = "http://localhost:5173/";
+//var frontendUrl = "http://localhost:5173/";
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("ReactPolicy",
@@ -84,7 +85,8 @@ builder.Services.AddAuthentication(options =>
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(key),
             ValidateLifetime = true,
-            ClockSkew = TimeSpan.Zero
+            ClockSkew = TimeSpan.Zero,
+            RoleClaimType = ClaimTypes.Role
         };
     });
 

@@ -25,7 +25,7 @@ namespace srrf.Controllers
             _context = context;
             _repository = repository;
         }
-
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] QueryRequestz query)
         {
@@ -38,6 +38,7 @@ namespace srrf.Controllers
             return Ok(requestHardwaredto);
         }
 
+        [Authorize(Roles = "RequestManager")]
         [HttpGet("{hardwareRequestId:int}")]
         public async Task<IActionResult> GetId(int hardwareRequestId)
         {
@@ -54,6 +55,7 @@ namespace srrf.Controllers
             return Ok(hardwareRequest.ToHardwareRequestDto());
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] HardwareRequestCUDDto createDto)
         {
@@ -66,6 +68,7 @@ namespace srrf.Controllers
             return CreatedAtAction(nameof(GetId), new { hardwareRequestId = hardwareRequestModel.RequestId }, hardwareRequestModel.ToHardwareRequestDto());
         }
 
+        [Authorize(Roles = "RequestManager")]
         [HttpPut]
         [Route("{hardwareRequestId:int}")]
         public async Task<IActionResult> Update([FromRoute] int hardwareRequestId, [FromBody] HardwareRequestCUDDto updateDto)
@@ -83,6 +86,7 @@ namespace srrf.Controllers
             return Ok(hardwareRequestModel.ToHardwareRequestDto());
         }
 
+        [Authorize(Roles = "RequestManager")]
         [HttpDelete]
         [Route("{hardwareRequestId:int}")]
         public async Task<IActionResult> Delete([FromRoute] int hardwareRequestId)

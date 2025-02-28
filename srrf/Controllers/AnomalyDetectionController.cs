@@ -5,7 +5,7 @@ using srrf.MachineLearning;
 
 namespace srrf.Controllers
 {
-    //[Authorize]
+    [Authorize(Roles = "SystemManager")]
     [Route("api/anomalyDetector")]
     [ApiController]
 
