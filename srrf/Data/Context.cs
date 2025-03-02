@@ -34,7 +34,19 @@ namespace srrf.Data
                             || e.State == EntityState.Deleted)
                 .ToList();
 
-            // Check if there is a logged-in user
+
+            var relevantEntities = modifiedEntities.Where(e =>
+                e.Entity.GetType().Name == "User" ||
+                e.Entity.GetType().Name == "Hardware" ||
+                e.Entity.GetType().Name == "HardwareRequest" ||
+                e.Entity.GetType().Name.StartsWith("IdentityUserRole`1")).ToList();
+
+            if (!relevantEntities.Any())
+            {
+                return await base.SaveChangesAsync(cancellationToken); 
+            }
+
+            //check if user logged in
             var userPrincipal = _contextAccessor.HttpContext?.User;
             string email = null;
             string roles = null;

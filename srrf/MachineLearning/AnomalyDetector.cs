@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.ML;
 using Microsoft.ML.Data;
+using srrf.Data;
 using srrf.Models;
 
 namespace srrf.MachineLearning
@@ -38,32 +40,11 @@ namespace srrf.MachineLearning
             }
         }
 
-        public async Task TrainAndDetectAnomaliesAsync()
+        public bool Predict(AuditLogModel log)
         {
             using (var scope = _serviceProvider.CreateScope())
             {
                 var dataLoader = scope.ServiceProvider.GetRequiredService<IDataLoader>();
-                var anomalyLogService = scope.ServiceProvider.GetRequiredService<AnomalyLogService>();
-
-                var auditLogs = dataLoader.GetAuditLogData();
-                var dataView = _mlContext.Data.LoadFromEnumerable(auditLogs);
-
-                var transformedData = _model.Transform(dataView);
-                var predictions = _mlContext.Data.CreateEnumerable<AnomalyPrediction>(transformedData, reuseRowObject: false);
-
-
-                foreach (var (log, pred) in auditLogs.Zip(predictions, (log, pred) => (log, pred)))
-                {
-                    await anomalyLogService.SaveAnomalyLogAsync(log, pred.Prediction);
-                }
-            }
-        }
-
-        public bool Predict(AuditLogModel log)
-        {
-            using (var scope = _serviceProvider.CreateScope()) 
-            {
-                var dataLoader = scope.ServiceProvider.GetRequiredService<IDataLoader>(); 
                 var data = new List<AuditLogModel> { log };
                 var dataView = _mlContext.Data.LoadFromEnumerable(data);
 
@@ -74,8 +55,39 @@ namespace srrf.MachineLearning
             }
         }
 
+        /*public async Task TrainAndDetectAnomaliesAsync()
+        {
+            using (var scope = _serviceProvider.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<Context>();
+                var anomalyLogService = scope.ServiceProvider.GetRequiredService<AnomalyLogService>();
 
-        public async Task<bool> PredictAndSaveAsync(AuditLogModel log)
+                var auditLogs = await dbContext.AuditLogs
+                    .Where(log => !log.IsAnalyzed)
+                    .ToListAsync();
+
+                foreach (var log in auditLogs)
+                {
+                    var auditLogModel = new AuditLogModel
+                    {
+                        Email = log.Email,
+                        Role = log.Role,
+                        EntityName = log.EntityName,
+                        Action = log.Action
+                    };
+
+                    bool isAnomalous = Predict(auditLogModel);
+
+                    await anomalyLogService.SaveAnomalyLogAsync(auditLogModel, isAnomalous);
+
+                    log.IsAnalyzed = true;
+                    await dbContext.SaveChangesAsync();
+                }
+            }
+        }*/
+
+
+/*        public async Task<bool> PredictAndSaveAsync(AuditLogModel log)
         {
             using (var scope = _serviceProvider.CreateScope())
             {
@@ -89,7 +101,7 @@ namespace srrf.MachineLearning
                 await anomalyLogService.SaveAnomalyLogAsync(log, prediction);
                 return prediction;
             }
-        }
+        }*/
     }
 
 }

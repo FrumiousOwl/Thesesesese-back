@@ -9,5 +9,6 @@
         public required string Action { get; set; }
         public required DateTime TimeStamp { get; set; }
         public required string Changes { get; set; }
+        public bool IsAnalyzed { get; set; } = false;
     }
 }

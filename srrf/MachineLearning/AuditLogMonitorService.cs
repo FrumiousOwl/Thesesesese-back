@@ -24,8 +24,10 @@ namespace srrf.MachineLearning
                 using (var scope = _scopeFactory.CreateScope())
                 {
                     var dbContext = scope.ServiceProvider.GetRequiredService<Context>();
+
+                    // Process only logs that haven't been analyzed yet
                     var latestLogs = await dbContext.AuditLogs
-                        .Where(log => log.Id > _lastProcessedId)
+                        .Where(log => !log.IsAnalyzed) // Only pick logs that haven't been analyzed
                         .OrderBy(log => log.Id)
                         .ToListAsync(stoppingToken);
 
@@ -39,17 +41,15 @@ namespace srrf.MachineLearning
                             EntityName = log.EntityName,
                             Action = log.Action
                         };
-
-/*                        if (IsAllowedAction(auditLogModel))
-                        {
-                            Console.WriteLine($"✅ Allowed action: {log.Role} {log.Action} on {log.EntityName} (Skipping anomaly check)");
-                            return; 
-                        }*/
-
                         bool isAnomalous = _anomalyDetector.Predict(auditLogModel);
                         Console.WriteLine($"Email: {log.Email}, Role: {log.Role}, Entity: {log.EntityName}, Action: {log.Action}, Anomalous: {isAnomalous}");
 
-                        _lastProcessedId = log.Id; 
+                        // Save the anomaly result
+                        await SaveAnomalyLogAsync(dbContext, log, isAnomalous);
+
+                        // Mark this log as analyzed
+                        log.IsAnalyzed = true;
+                        await dbContext.SaveChangesAsync(stoppingToken);
                     }
                 }
 
@@ -57,11 +57,22 @@ namespace srrf.MachineLearning
             }
         }
 
-/*        private bool IsAllowedAction(AuditLogModel log)
+        private async Task SaveAnomalyLogAsync(Context dbContext, AuditLog log, bool isAnomalous)
         {
-            return (log.Role == "RequestManager" && log.EntityName == "Request" && log.Action == "Deleted") ||
-                   (log.Role == "InventoryManager" && log.EntityName == "Hardware" && log.Action == "Deleted");
-        }*/
+            var anomalyLog = new AnomalyLog
+            {
+                Email = log.Email,
+                Role = log.Role,
+                Entity = log.EntityName,
+                Action = log.Action,
+                IsAnomaly = isAnomalous,
+                Timestamp = log.TimeStamp
+            };
+
+            dbContext.AnomalyLogs.Add(anomalyLog);
+            await dbContext.SaveChangesAsync();
+        }
+
 
     }
 }

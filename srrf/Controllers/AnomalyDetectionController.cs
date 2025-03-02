@@ -22,13 +22,13 @@ namespace srrf.Controllers
             _anomalyLogService = anomalyLogService;
         }
 
-        [HttpPost("detectAnomalies")]
+/*        [HttpPost("detectAnomalies")]
 
         public IActionResult DetectAnomalies()
         {
             _detector.TrainAndDetectAnomaliesAsync();
             return Ok("Anomaly detection completed.");
-        }
+        }*/
 
         [HttpGet("logs")]
         public async Task<IActionResult> GetAllAnomalyLogs()
