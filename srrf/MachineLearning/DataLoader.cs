@@ -34,17 +34,19 @@ namespace srrf.MachineLearning
             logs.Add(new AuditLogModel { Email = "systemManager@example.com", Role = "SystemManager", EntityName = "IdentityUserRole`1", Action = "Deleted" });
 
             // Inventory manager permissions
-            logs.Add(new AuditLogModel { Email = "Lulquidiatez3@gmail.com", Role = "InventoryManager", EntityName = "Hardware", Action = "Added" });
+            logs.Add(new AuditLogModel { Email = "dzfddda@gmail.com", Role = "InventoryManager", EntityName = "Hardware", Action = "Added" });
             logs.Add(new AuditLogModel { Email = "inventoryManager@example.com", Role = "InventoryManager", EntityName = "Hardware", Action = "Modified" });
-            logs.Add(new AuditLogModel { Email = "inventoryManager@example.com", Role = "InventoryManager", EntityName = "Hardware", Action = "Deleted" });
+            logs.Add(new AuditLogModel { Email = "vSDvSegxc@example.com", Role = "InventoryManager", EntityName = "Hardware", Action = "Deleted" });
             logs.Add(new AuditLogModel { Email = "Lulquidiatez3@gmail.com", Role = "InventoryManager", EntityName = "Hardware", Action = "Deleted" });
-            logs.Add(new AuditLogModel { Email = "Lulquidiatez3@gmail.com", Role = "InventoryManager", EntityName = "Hardware", Action = "Deleted" });
+            logs.Add(new AuditLogModel { Email = "vzr55hbh@gmail.com", Role = "InventoryManager", EntityName = "Hardware", Action = "Deleted" });
             logs.Add(new AuditLogModel { Email = "Billyjeanyzs@example.com", Role = "InventoryManager", EntityName = "Hardware", Action = "Deleted" });
 
             // Request Manager permissions
-            logs.Add(new AuditLogModel { Email = "Turdra22@gmail.com", Role = "RequestManager", EntityName = "HardwareRequest", Action = "Added" });
+            logs.Add(new AuditLogModel { Email = "Abdgsdgj@gmail.com", Role = "RequestManager", EntityName = "HardwareRequest", Action = "Added" });
             logs.Add(new AuditLogModel { Email = "requestManager@example.com", Role = "RequestManager", EntityName = "HardwareRequest", Action = "Modified" });
-            logs.Add(new AuditLogModel { Email = "FallClown209@gmail.com", Role = "RequestManager", EntityName = "HardwareRequest", Action = "Deleted" });
+            logs.Add(new AuditLogModel { Email = "dvfkmg54i63gmail.com", Role = "RequestManager", EntityName = "HardwareRequest", Action = "Added" });
+            logs.Add(new AuditLogModel { Email = "requestManager@example.com", Role = "RequestManager", EntityName = "HardwareRequest", Action = "Modified" });
+            logs.Add(new AuditLogModel { Email = "fvdfcn6y5@gmail.com", Role = "RequestManager", EntityName = "HardwareRequest", Action = "Deleted" });
             logs.Add(new AuditLogModel { Email = "FallClown209@gmail.com", Role = "RequestManager", EntityName = "HardwareRequest", Action = "Deleted" });
             logs.Add(new AuditLogModel { Email = "Turdra22@gmail.com", Role = "RequestManager", EntityName = "HardwareRequest", Action = "Deleted" });
             logs.Add(new AuditLogModel { Email = "requestManager@example.com", Role = "RequestManager", EntityName = "HardwareRequest", Action = "Deleted" });

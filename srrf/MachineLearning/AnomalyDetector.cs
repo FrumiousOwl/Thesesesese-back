@@ -23,11 +23,10 @@ namespace srrf.MachineLearning
 
         private void TrainModel()
         {
-            using (var scope = _serviceProvider.CreateScope()) 
+            using (var scope = _serviceProvider.CreateScope())
             {
-                var dataLoader = scope.ServiceProvider.GetRequiredService<IDataLoader>(); 
-                var auditLogs = dataLoader.GetAuditLogData();
-                var dataView = _mlContext.Data.LoadFromEnumerable(auditLogs);
+                var dataLoader = scope.ServiceProvider.GetRequiredService<IDataLoader>();
+                var dataView = _mlContext.Data.LoadFromEnumerable(dataLoader.GetAuditLogData());
 
                 var pipeline = _mlContext.Transforms.Categorical.OneHotEncoding("RoleEncoded", "Role")
                     .Append(_mlContext.Transforms.Categorical.OneHotEncoding("EntityEncoded", "EntityName"))
@@ -39,21 +38,23 @@ namespace srrf.MachineLearning
             }
         }
 
-        public void TrainAndDetectAnomalies()
+        public async Task TrainAndDetectAnomaliesAsync()
         {
-            using (var scope = _serviceProvider.CreateScope()) 
+            using (var scope = _serviceProvider.CreateScope())
             {
-                var dataLoader = scope.ServiceProvider.GetRequiredService<IDataLoader>(); 
+                var dataLoader = scope.ServiceProvider.GetRequiredService<IDataLoader>();
+                var anomalyLogService = scope.ServiceProvider.GetRequiredService<AnomalyLogService>();
+
                 var auditLogs = dataLoader.GetAuditLogData();
                 var dataView = _mlContext.Data.LoadFromEnumerable(auditLogs);
 
                 var transformedData = _model.Transform(dataView);
                 var predictions = _mlContext.Data.CreateEnumerable<AnomalyPrediction>(transformedData, reuseRowObject: false);
 
-                Console.WriteLine("Anomaly Detection Results:");
+
                 foreach (var (log, pred) in auditLogs.Zip(predictions, (log, pred) => (log, pred)))
                 {
-                    Console.WriteLine($"Email: {log.Email}, Role: {log.Role}, Entity: {log.EntityName}, Action: {log.Action}, Prediction (Anomaly?): {pred.Prediction}");
+                    await anomalyLogService.SaveAnomalyLogAsync(log, pred.Prediction);
                 }
             }
         }
@@ -70,6 +71,23 @@ namespace srrf.MachineLearning
                 var predictions = _mlContext.Data.CreateEnumerable<AnomalyPrediction>(transformedData, reuseRowObject: false).ToList();
 
                 return predictions.FirstOrDefault()?.Prediction ?? false;
+            }
+        }
+
+
+        public async Task<bool> PredictAndSaveAsync(AuditLogModel log)
+        {
+            using (var scope = _serviceProvider.CreateScope())
+            {
+                var anomalyLogService = scope.ServiceProvider.GetRequiredService<AnomalyLogService>();
+
+                var data = new List<AuditLogModel> { log };
+                var dataView = _mlContext.Data.LoadFromEnumerable(data);
+                var transformedData = _model.Transform(dataView);
+                var prediction = _mlContext.Data.CreateEnumerable<AnomalyPrediction>(transformedData, reuseRowObject: false).FirstOrDefault()?.Prediction ?? false;
+
+                await anomalyLogService.SaveAnomalyLogAsync(log, prediction);
+                return prediction;
             }
         }
     }

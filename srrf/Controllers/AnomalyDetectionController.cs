@@ -13,19 +13,28 @@ namespace srrf.Controllers
     {
         private readonly AnomalyDetector _detector;
         private readonly Context _context;
+        private readonly AnomalyLogService _anomalyLogService;
 
-        public AnomalyDetectionController(AnomalyDetector detector, Context context)
+        public AnomalyDetectionController(AnomalyDetector detector, Context context, AnomalyLogService anomalyLogService)
         {
             _detector = detector;
             _context = context;
+            _anomalyLogService = anomalyLogService;
         }
 
         [HttpPost("detectAnomalies")]
-        
+
         public IActionResult DetectAnomalies()
         {
-            _detector.TrainAndDetectAnomalies();
+            _detector.TrainAndDetectAnomaliesAsync();
             return Ok("Anomaly detection completed.");
+        }
+
+        [HttpGet("logs")]
+        public async Task<IActionResult> GetAllAnomalyLogs()
+        {
+            var logs = await _anomalyLogService.GetAllAnomaliesAsync();
+            return Ok(logs);
         }
     }
 }

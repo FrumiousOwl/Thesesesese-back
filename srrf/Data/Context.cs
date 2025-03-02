@@ -23,6 +23,7 @@ namespace srrf.Data
         public DbSet<HardwareRequest> HardwareRequests { get; set; }
         public DbSet<Hardware> Hardware { get; set; }
         public DbSet <AuditLog> AuditLogs { get; set; }
+        public DbSet<AnomalyLog> AnomalyLogs { get; set; }
 
         public async override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {

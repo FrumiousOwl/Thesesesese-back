@@ -143,6 +143,7 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<UserRoleService>();
 
 //ML Services
+builder.Services.AddScoped<AnomalyLogService>();
 builder.Services.AddScoped<IDataLoader, DataLoader>();
 builder.Services.AddSingleton<AnomalyDetector>();
 builder.Services.AddHostedService<AuditLogMonitorService>();

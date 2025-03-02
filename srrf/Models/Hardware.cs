@@ -5,7 +5,7 @@
         public int HardwareId { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty ;
-        public DateTime DatePurchased { get; set; }
+        public DateTime DatePurchased { get; set; } = DateTime.Now;
         public int? Defective { get; set; }
         public int? Available { get; set; }
         public int? Deployed { get; set; }

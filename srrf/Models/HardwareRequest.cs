@@ -6,7 +6,7 @@ namespace srrf.Models
     {
         [Key]
         public int RequestId { get; set; } 
-        public DateTime DateNeeded { get; set; }
+        public DateTime DateNeeded { get; set; } = DateTime.Now;
         public string Name { get; set; } = string.Empty; 
         public string Department { get; set; } = string.Empty; 
         public string Workstation { get; set; } = string.Empty;
