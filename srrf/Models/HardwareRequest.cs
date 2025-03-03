@@ -13,7 +13,6 @@ namespace srrf.Models
         public string Problem { get; set; } = string.Empty;
         public bool IsFulfilled { get; set; }
 
-        //Navigation
         public Hardware Hardware { get; set; } 
         public int HardwareId { get; set; }
 

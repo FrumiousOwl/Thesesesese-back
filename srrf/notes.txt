@@ -46,8 +46,8 @@ User
 {
 	[
 	  "userName": "Glimmer",
-	  "email": "GlimmeringCapeyy@gmail.com",
 	  "password": "suPt0Glimm$r26Min_t33*ok"
+	  "email": "GlimmeringCapeyy@gmail.com",
 	],
 	[
 	  "userName": "Midas",

@@ -63,7 +63,7 @@ namespace srrf.Repository
             return await _context.HardwareRequests.Include(h => h.Hardware).FirstOrDefaultAsync(x => x.RequestId == id);
         }
 
-        public async Task<HardwareRequest?> UpdateAsync(int id, HardwareRequestCUDDto hardwareRequestDto)
+        public async Task<HardwareRequest?> UpdateAsync(int id, HardwareRequestCUDDto hardwareRequestDto, string userName, List<string> userRoles)
         {
             var existRequest = await _context.HardwareRequests.FirstOrDefaultAsync(x => x.RequestId == id);
 
@@ -72,7 +72,13 @@ namespace srrf.Repository
                 return null;
             }
 
-            existRequest.Name = hardwareRequestDto.Name;
+            bool isAdminOrManager = userRoles.Contains("RequestManager");
+
+            if (!isAdminOrManager && existRequest.Name != userName)
+            {
+                return null; 
+            }
+
             existRequest.Department = hardwareRequestDto.Department;
             existRequest.Workstation = hardwareRequestDto.Workstation;
             existRequest.Problem = hardwareRequestDto.Problem;
@@ -80,11 +86,11 @@ namespace srrf.Repository
             existRequest.DateNeeded = hardwareRequestDto.DateNeeded;
             existRequest.HardwareId = hardwareRequestDto.HardwareId;
 
-
             await _context.SaveChangesAsync();
 
             return existRequest;
         }
+
     }
 
 }

@@ -25,9 +25,9 @@ namespace srrf.MachineLearning
                 {
                     var dbContext = scope.ServiceProvider.GetRequiredService<Context>();
 
-                    // Process only logs that haven't been analyzed yet
+
                     var latestLogs = await dbContext.AuditLogs
-                        .Where(log => !log.IsAnalyzed) // Only pick logs that haven't been analyzed
+                        .Where(log => !log.IsAnalyzed) 
                         .OrderBy(log => log.Id)
                         .ToListAsync(stoppingToken);
 
@@ -44,16 +44,14 @@ namespace srrf.MachineLearning
                         bool isAnomalous = _anomalyDetector.Predict(auditLogModel);
                         Console.WriteLine($"Email: {log.Email}, Role: {log.Role}, Entity: {log.EntityName}, Action: {log.Action}, Anomalous: {isAnomalous}");
 
-                        // Save the anomaly result
                         await SaveAnomalyLogAsync(dbContext, log, isAnomalous);
 
-                        // Mark this log as analyzed
                         log.IsAnalyzed = true;
                         await dbContext.SaveChangesAsync(stoppingToken);
                     }
                 }
 
-                await Task.Delay(20000, stoppingToken); // Check every 20 seconds
+                await Task.Delay(6666, stoppingToken); 
             }
         }
 

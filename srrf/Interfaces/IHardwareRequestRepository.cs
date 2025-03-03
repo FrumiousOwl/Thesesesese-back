@@ -9,7 +9,7 @@ namespace srrf.Interfaces
         Task<List<HardwareRequest>> GetAllAsync(QueryRequestz query);
         Task<HardwareRequest?> GetByIdAsync(int id);
         Task<HardwareRequest> CreateAsync(HardwareRequest hardwareRequestModel);
-        Task<HardwareRequest?> UpdateAsync(int id, HardwareRequestCUDDto hardwareRequestDto);
+        Task<HardwareRequest?> UpdateAsync(int id, HardwareRequestCUDDto hardwareRequestDto, string userName, List<string> userRoles);
         Task<HardwareRequest?> DeleteAsync(int id);
     }
 }

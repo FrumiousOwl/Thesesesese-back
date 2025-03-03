@@ -3,12 +3,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.JsonWebTokens;
 using srrf.Data;
 using srrf.Dto.HardwareRequest;
 using srrf.Interfaces;
 using srrf.Mapper;
 using srrf.Models;
 using srrf.Queries;
+using System.Security.Claims;
 
 namespace srrf.Controllers
 {
@@ -19,11 +21,18 @@ namespace srrf.Controllers
     {
         private readonly Context _context;
         private readonly IHardwareRequestRepository _repository;
-        public HardwareRequestController(Context context, IHardwareRequestRepository repository)
+        private readonly IHttpContextAccessor _contextAccessor;
+        private readonly ILogger<HardwareRequestController> _logger;
+        public HardwareRequestController(Context context, 
+            IHardwareRequestRepository repository, 
+            IHttpContextAccessor contextAccessor,
+            ILogger<HardwareRequestController> logger)
         {
 
             _context = context;
             _repository = repository;
+            _contextAccessor = contextAccessor;
+            _logger = logger;
         }
         [Authorize]
         [HttpGet]
@@ -68,23 +77,47 @@ namespace srrf.Controllers
             return CreatedAtAction(nameof(GetId), new { hardwareRequestId = hardwareRequestModel.RequestId }, hardwareRequestModel.ToHardwareRequestDto());
         }
 
-        [Authorize(Roles = "RequestManager")]
+        [Authorize(Roles = "RequestManager, User")]
         [HttpPut]
         [Route("{hardwareRequestId:int}")]
         public async Task<IActionResult> Update([FromRoute] int hardwareRequestId, [FromBody] HardwareRequestCUDDto updateDto)
         {
             if (!ModelState.IsValid)
+            {
+                _logger.LogWarning("Invalid model state for update request.");
                 return BadRequest(ModelState);
+            }
 
-            var hardwareRequestModel = await _repository.UpdateAsync(hardwareRequestId, updateDto);
+            var userPrincipal = _contextAccessor.HttpContext?.User;
+            if (userPrincipal == null || !userPrincipal.Identity.IsAuthenticated)
+            {
+                _logger.LogWarning("Unauthorized access attempt - user not authenticated.");
+                return Unauthorized("User not authenticated.");
+            }
+
+            // Log all claims for debugging
+            var allClaims = userPrincipal.Claims.Select(c => $"{c.Type}: {c.Value}").ToList();
+            _logger.LogInformation($"All claims: {string.Join(", ", allClaims)}");
+
+            // Retrieve username from claims
+            var userName = userPrincipal.FindFirst(ClaimTypes.GivenName)?.Value
+                           ?? userPrincipal.FindFirst(ClaimTypes.Email)?.Value;
+
+            var userRoles = userPrincipal.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
+
+            _logger.LogInformation($"User attempting update: {userName}, Roles: {string.Join(", ", userRoles)}, Request ID: {hardwareRequestId}");
+
+            var hardwareRequestModel = await _repository.UpdateAsync(hardwareRequestId, updateDto, userName, userRoles);
 
             if (hardwareRequestModel == null)
             {
-                return NotFound(hardwareRequestId);
+                _logger.LogWarning($"Update failed for Request ID: {hardwareRequestId}. Request not found or unauthorized.");
+                return NotFound("Request not found or unauthorized.");
             }
 
             return Ok(hardwareRequestModel.ToHardwareRequestDto());
         }
+
 
         [Authorize(Roles = "RequestManager")]
         [HttpDelete]

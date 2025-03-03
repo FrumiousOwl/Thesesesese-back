@@ -27,7 +27,7 @@ namespace srrf.Controllers
             _repository = repository;
         }
 
-        [Authorize(Roles = "InventoryManager, RequestManager, SystemManager")]
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] QueryHardware queryHardware)
         {

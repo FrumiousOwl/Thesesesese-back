@@ -46,7 +46,7 @@ namespace srrf.Data
                 return await base.SaveChangesAsync(cancellationToken); 
             }
 
-            //check if user logged in
+           
             var userPrincipal = _contextAccessor.HttpContext?.User;
             string email = null;
             string roles = null;
