@@ -12,7 +12,7 @@ namespace srrf.Models
         public string Workstation { get; set; } = string.Empty;
         public string Problem { get; set; } = string.Empty;
         public bool IsFulfilled { get; set; }
-
+        public string SerialNo { get; set; } = string.Empty;
         public Hardware Hardware { get; set; } 
         public int HardwareId { get; set; }
 

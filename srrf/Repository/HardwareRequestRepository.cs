@@ -82,9 +82,14 @@ namespace srrf.Repository
             existRequest.Department = hardwareRequestDto.Department;
             existRequest.Workstation = hardwareRequestDto.Workstation;
             existRequest.Problem = hardwareRequestDto.Problem;
-            existRequest.IsFulfilled = hardwareRequestDto.IsFulfilled;
             existRequest.DateNeeded = hardwareRequestDto.DateNeeded;
             existRequest.HardwareId = hardwareRequestDto.HardwareId;
+
+            if (isAdminOrManager)
+            {
+                existRequest.IsFulfilled = hardwareRequestDto.IsFulfilled;
+                existRequest.SerialNo = hardwareRequestDto.SerialNo;
+            }
 
             await _context.SaveChangesAsync();
 

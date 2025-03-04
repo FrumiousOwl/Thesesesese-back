@@ -15,6 +15,8 @@ namespace srrf.Dto.HardwareRequest
         [Required]
         public string Problem { get; set; } = string.Empty;
         public bool IsFulfilled { get; set; }
+        public string SerialNo { get; set; } = string.Empty;
         public int HardwareId { get; set; }
+
     }
 }

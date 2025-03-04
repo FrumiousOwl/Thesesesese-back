@@ -21,7 +21,8 @@ namespace srrf.Mapper
                 Problem = hardwareRequestModel.Problem,
                 DateNeeded = hardwareRequestModel.DateNeeded,
                 IsFulfilled = hardwareRequestModel.IsFulfilled,
-                HardwareId = hardwareRequestModel.HardwareId
+                HardwareId = hardwareRequestModel.HardwareId,
+                SerialNo = hardwareRequestModel.SerialNo
             };
         }
         public static HardwareRequest CreateHardwareRequestDto(this HardwareRequestCUDDto hardwareRequestDto)
@@ -34,7 +35,8 @@ namespace srrf.Mapper
                 Problem = hardwareRequestDto.Problem,
                 DateNeeded = hardwareRequestDto.DateNeeded,
                 IsFulfilled = hardwareRequestDto.IsFulfilled,
-                HardwareId = hardwareRequestDto.HardwareId
+                HardwareId = hardwareRequestDto.HardwareId,
+                SerialNo = hardwareRequestDto.SerialNo
             };
         }
 

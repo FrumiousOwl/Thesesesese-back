@@ -8,6 +8,7 @@
         public string Problem { get; set; } = string.Empty;
         public DateTime DateNeeded { get; set; }
         public bool IsFulfilled { get; set; }
+        public string SerialNo { get; set; } = string.Empty;
         public int HardwareId { get; set; }
     }
 }

@@ -23,8 +23,8 @@ RequestManager
 	],
 	[
 	  "userName": "FallClown",
-	  "email": "FallClown209@gmail.com",
 	  "password": "FalC0n!3seee666^^^"
+	  "email": "FallClown209@gmail.com",
 	]
 }
 

@@ -71,6 +71,15 @@ namespace srrf.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
+            var userPrincipal = _contextAccessor.HttpContext?.User;
+            var userRoles = userPrincipal?.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList() ?? new List<string>();
+
+            if (!userRoles.Contains("RequestManager"))
+            {
+                createDto.IsFulfilled = false;
+                createDto.SerialNo = "AAA000";
+            }
+
             var hardwareRequestModel = createDto.CreateHardwareRequestDto();
             await _repository.CreateAsync(hardwareRequestModel);
 
@@ -95,11 +104,9 @@ namespace srrf.Controllers
                 return Unauthorized("User not authenticated.");
             }
 
-            // Log all claims for debugging
             var allClaims = userPrincipal.Claims.Select(c => $"{c.Type}: {c.Value}").ToList();
             _logger.LogInformation($"All claims: {string.Join(", ", allClaims)}");
 
-            // Retrieve username from claims
             var userName = userPrincipal.FindFirst(ClaimTypes.GivenName)?.Value
                            ?? userPrincipal.FindFirst(ClaimTypes.Email)?.Value;
 
