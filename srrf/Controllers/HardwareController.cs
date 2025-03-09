@@ -42,6 +42,7 @@ namespace srrf.Controllers
             return Ok(hardwares);
         }
 
+        [Authorize(Roles = "SystemManager, InventoryManager, RequestManager")]
         [HttpGet("{hardwareId:int}")]
         public async Task<IActionResult> GetId(int hardwareId)
         {

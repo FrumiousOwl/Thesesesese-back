@@ -64,6 +64,30 @@ namespace srrf.Controllers
             return Ok(hardwareRequest.ToHardwareRequestDto());
         }
 
+        [Authorize(Roles = "User, RequestManager")]
+        [HttpGet("{userRequest}")]
+        public async Task<IActionResult> GetByUserName()
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var userPrincipal = _contextAccessor.HttpContext?.User;
+            var userName = userPrincipal.FindFirst(ClaimTypes.GivenName)?.Value
+                ?? userPrincipal.FindFirst(ClaimTypes.Email)?.Value;
+
+            if (string.IsNullOrEmpty(userName))
+            {
+                return Unauthorized("User information is missing.");
+            }
+
+            var userRequests = await _repository.GetRequestsByUserAsync(userName);
+            var userRequestsDto = userRequests.Select(h => h.ToHardwareRequestDto());
+
+            return Ok(userRequestsDto);
+        }
+
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] HardwareRequestCUDDto createDto)
@@ -80,7 +104,17 @@ namespace srrf.Controllers
                 createDto.SerialNo = "AAA000";
             }
 
+            var userName = userPrincipal.FindFirst(ClaimTypes.GivenName)?.Value
+               ?? userPrincipal.FindFirst(ClaimTypes.Email)?.Value;
+
+            if (string.IsNullOrEmpty(userName))
+            {
+                return Unauthorized("User information is missing.");
+            }
+
             var hardwareRequestModel = createDto.CreateHardwareRequestDto();
+            hardwareRequestModel.Name = userName;
+
             await _repository.CreateAsync(hardwareRequestModel);
 
             return CreatedAtAction(nameof(GetId), new { hardwareRequestId = hardwareRequestModel.RequestId }, hardwareRequestModel.ToHardwareRequestDto());
@@ -93,32 +127,32 @@ namespace srrf.Controllers
         {
             if (!ModelState.IsValid)
             {
-                _logger.LogWarning("Invalid model state for update request.");
+                //_logger.LogWarning("Invalid model state for update request.");
                 return BadRequest(ModelState);
             }
 
             var userPrincipal = _contextAccessor.HttpContext?.User;
             if (userPrincipal == null || !userPrincipal.Identity.IsAuthenticated)
             {
-                _logger.LogWarning("Unauthorized access attempt - user not authenticated.");
+                //_logger.LogWarning("Unauthorized access attempt - user not authenticated.");
                 return Unauthorized("User not authenticated.");
             }
 
-            var allClaims = userPrincipal.Claims.Select(c => $"{c.Type}: {c.Value}").ToList();
-            _logger.LogInformation($"All claims: {string.Join(", ", allClaims)}");
+            //var allClaims = userPrincipal.Claims.Select(c => $"{c.Type}: {c.Value}").ToList();
+            //_logger.LogInformation($"All claims: {string.Join(", ", allClaims)}");
 
             var userName = userPrincipal.FindFirst(ClaimTypes.GivenName)?.Value
                            ?? userPrincipal.FindFirst(ClaimTypes.Email)?.Value;
 
             var userRoles = userPrincipal.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
 
-            _logger.LogInformation($"User attempting update: {userName}, Roles: {string.Join(", ", userRoles)}, Request ID: {hardwareRequestId}");
+            //_logger.LogInformation($"User attempting update: {userName}, Roles: {string.Join(", ", userRoles)}, Request ID: {hardwareRequestId}");
 
             var hardwareRequestModel = await _repository.UpdateAsync(hardwareRequestId, updateDto, userName, userRoles);
 
             if (hardwareRequestModel == null)
             {
-                _logger.LogWarning($"Update failed for Request ID: {hardwareRequestId}. Request not found or unauthorized.");
+                //_logger.LogWarning($"Update failed for Request ID: {hardwareRequestId}. Request not found or unauthorized.");
                 return NotFound("Request not found or unauthorized.");
             }
 

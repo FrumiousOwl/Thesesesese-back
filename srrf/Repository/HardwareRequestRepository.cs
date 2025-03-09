@@ -63,6 +63,13 @@ namespace srrf.Repository
             return await _context.HardwareRequests.Include(h => h.Hardware).FirstOrDefaultAsync(x => x.RequestId == id);
         }
 
+        public async Task<IEnumerable<HardwareRequest?>> GetRequestsByUserAsync(string name)
+        {
+            return await _context.HardwareRequests
+                .Where(x => x.Name == name)
+                .ToListAsync();
+        }
+
         public async Task<HardwareRequest?> UpdateAsync(int id, HardwareRequestCUDDto hardwareRequestDto, string userName, List<string> userRoles)
         {
             var existRequest = await _context.HardwareRequests.FirstOrDefaultAsync(x => x.RequestId == id);
