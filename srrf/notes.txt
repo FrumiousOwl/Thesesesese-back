@@ -37,8 +37,8 @@ InventoryManager
 	],
 	[
 	  "userName": "BillieJeans",
+	  "password": "--J@cK!nTh3MO0nN--"
 	  "email": "Billyjeanyzs@example.com",
-	  "password": "Leav3MeA!0nE"
 	]
 }
 

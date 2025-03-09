@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.JsonWebTokens;
 using srrf.Dto.Account;
 using srrf.Interfaces;
 using srrf.Models;
+using System.Security.Claims;
 
 namespace srrf.Controllers
 {
@@ -14,12 +17,52 @@ namespace srrf.Controllers
         private readonly UserManager<User> _userManager;
         private readonly ITokenService _tokenService;
         private readonly SignInManager<User> _signInManager;
-        public AccountController(UserManager<User> userManager, ITokenService tokenService, SignInManager<User> signInManager) 
+        private readonly IHttpContextAccessor _contextAccessor;
+        private readonly ILogger<AccountController> _logger;
+        public AccountController(UserManager<User> userManager,
+            ITokenService tokenService,
+            SignInManager<User> signInManager,
+            IHttpContextAccessor httpContext,
+            ILogger<AccountController> logger) 
         {
             _userManager = userManager;
             _tokenService = tokenService;
             _signInManager = signInManager;
+            _logger = logger;
+            _contextAccessor = httpContext;
         }
+
+        [Authorize]
+        [HttpPost("change-password")]
+        public async Task<IActionResult> ChangePassword(ChangePasswordDto changePasswordDto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var userPrincipal = _contextAccessor.HttpContext?.User;
+            var userEmail = userPrincipal?.FindFirst(ClaimTypes.Email)?.Value;
+
+            if (string.IsNullOrEmpty(userEmail))
+            {
+                return Unauthorized("User information is missing.");
+            }
+
+            var user = await _userManager.FindByEmailAsync(userEmail);
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
+
+            var result = await _userManager.ChangePasswordAsync(user, changePasswordDto.CurrentPassword, changePasswordDto.NewPassword);
+
+            if (!result.Succeeded)
+            {
+                return BadRequest(result.Errors);
+            }
+
+            return Ok("Password changed successfully.");
+        }
+
 
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto loginDto)
