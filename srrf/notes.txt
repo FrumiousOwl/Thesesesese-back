@@ -9,8 +9,8 @@
 SystemManager
 {
   "userName": "MouseRat",
-  "email": "Admin23qwxsq@gmail.com",
   "password": "ae@335xddRiki#"
+  "email": "Admin23qwxsq@gmail.com",
   "PhoneNumber": "09238322296"
 }
 
@@ -52,7 +52,7 @@ User
 	[
 	  "userName": "Midas",
 	  "email": "BuggyMidas11@gmail.com",
-	  "password": "G0ldm**N3yyya!~"
+	  "password": "G0ld3n(@rg3#-fDe!"
 	],
 }
 

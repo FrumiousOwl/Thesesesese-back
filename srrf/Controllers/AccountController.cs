@@ -2,11 +2,11 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.JsonWebTokens;
 using srrf.Dto.Account;
 using srrf.Interfaces;
 using srrf.Models;
 using System.Security.Claims;
+using System.Text;
 
 namespace srrf.Controllers
 {
@@ -18,17 +18,14 @@ namespace srrf.Controllers
         private readonly ITokenService _tokenService;
         private readonly SignInManager<User> _signInManager;
         private readonly IHttpContextAccessor _contextAccessor;
-        private readonly ILogger<AccountController> _logger;
         public AccountController(UserManager<User> userManager,
             ITokenService tokenService,
             SignInManager<User> signInManager,
-            IHttpContextAccessor httpContext,
-            ILogger<AccountController> logger) 
+            IHttpContextAccessor httpContext) 
         {
             _userManager = userManager;
             _tokenService = tokenService;
             _signInManager = signInManager;
-            _logger = logger;
             _contextAccessor = httpContext;
         }
 
@@ -135,6 +132,60 @@ namespace srrf.Controllers
             {
                 return StatusCode(500, e);
             }
+        }
+
+        [Authorize(Roles = "SystemManager")]
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> AdminResetPassword(ResetPasswordDto resetPasswordDto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var userPrincipal = _contextAccessor.HttpContext?.User;
+            var adminEmail = userPrincipal?.FindFirst(ClaimTypes.Email)?.Value;
+
+            if (string.IsNullOrEmpty(adminEmail))
+            {
+                return Unauthorized("SystemManager not found.");
+            }
+
+            var adminUser = await _userManager.FindByEmailAsync(adminEmail);
+            if (adminUser == null || !await _userManager.IsInRoleAsync(adminUser, "SystemManager"))
+            {
+                return Unauthorized("You are not authorized to perform this action.");
+            }
+
+            var user = await _userManager.FindByEmailAsync(resetPasswordDto.UserEmail);
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
+
+            var temporaryPassword = string.IsNullOrEmpty(resetPasswordDto.TemporaryPassword)
+                ? GenerateTemporaryPassword()
+                : resetPasswordDto.TemporaryPassword;
+
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var result = await _userManager.ResetPasswordAsync(user, token, temporaryPassword);
+
+            if (!result.Succeeded)
+            {
+                return BadRequest(result.Errors);
+            }
+
+            return Ok("Password reset successfully.");
+        }
+
+        private string GenerateTemporaryPassword()
+        {
+            const string validChars = "ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*?_-";
+            var random = new Random();
+            var password = new StringBuilder();
+            for (int i = 0; i < 12; i++) 
+            {
+                password.Append(validChars[random.Next(validChars.Length)]);
+            }
+            return password.ToString();
         }
     }
 }
