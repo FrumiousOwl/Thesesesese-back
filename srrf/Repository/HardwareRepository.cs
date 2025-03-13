@@ -4,6 +4,7 @@ using srrf.Dto.Hardware;
 using srrf.Interfaces;
 using srrf.Models;
 using srrf.Queries;
+using srrf.Service;
 
 namespace srrf.Repository
 {
@@ -18,10 +19,14 @@ namespace srrf.Repository
 
         public async Task<Hardware> CreateAsync(Hardware hardwareModel)
         {
+            hardwareModel.Supplier = AesEncryption.Encrypt(hardwareModel.Supplier);
+            hardwareModel.TotalPrice = AesEncryption.Encrypt(hardwareModel.TotalPrice);
+
             await _context.Hardware.AddAsync(hardwareModel);
             await _context.SaveChangesAsync();
             return hardwareModel;
         }
+
 
         public async Task<Hardware?> DeleteAsync(int id)
         {
@@ -110,7 +115,7 @@ namespace srrf.Repository
 
         public async Task<Hardware?> UpdateAsync(int id, HardwareCUDDto hardwareDto)
         {
-            var existHardware = await _context.Hardware.FirstOrDefaultAsync(x =>x.HardwareId == id);
+            var existHardware = await _context.Hardware.FirstOrDefaultAsync(x => x.HardwareId == id);
 
             if (existHardware == null)
             {
@@ -120,13 +125,15 @@ namespace srrf.Repository
             existHardware.Name = hardwareDto.Name;
             existHardware.Description = hardwareDto.Description;
             existHardware.DatePurchased = hardwareDto.DatePurchased;
-            existHardware.Supplier = hardwareDto.Supplier;
+            existHardware.Supplier = AesEncryption.Encrypt(hardwareDto.Supplier);
             existHardware.Defective = hardwareDto.Defective;
             existHardware.Available = hardwareDto.Available;
             existHardware.Deployed = hardwareDto.Deployed;
+            existHardware.TotalPrice = AesEncryption.Encrypt(hardwareDto.TotalPrice);
 
             await _context.SaveChangesAsync();
             return existHardware;
         }
-    } 
+
+    }
 }

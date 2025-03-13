@@ -21,5 +21,7 @@ namespace srrf.Dto.Hardware
         public int? Defective { get; set; }
         public int? Available { get; set; }
         public int? Deployed { get; set; }
+        [Required]
+        public string TotalPrice { get; set; } = string.Empty;
     }
 }

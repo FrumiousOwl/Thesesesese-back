@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using srrf.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace srrf.Dto.HardwareRequest
 {
@@ -18,5 +19,8 @@ namespace srrf.Dto.HardwareRequest
         public string SerialNo { get; set; } = string.Empty;
         public int HardwareId { get; set; }
 
+        [Required]
+        [EnumDataType(typeof(RequestStatus))]
+        public RequestStatus Status { get; set; } = RequestStatus.Pending;
     }
 }

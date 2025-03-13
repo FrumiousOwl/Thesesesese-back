@@ -1,4 +1,6 @@
 ﻿
+using srrf.Models;
+
 namespace srrf.Dto.HardwareRequest
 {
     public class HardwareRequestDto
@@ -12,5 +14,6 @@ namespace srrf.Dto.HardwareRequest
         public bool IsFulfilled { get; set; }
         public string SerialNo { get; set; } = string.Empty;
         public int HardwareId { get; set; }
+        public RequestStatus Status { get; set; } = RequestStatus.Pending;
     }
 }

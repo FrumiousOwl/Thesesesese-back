@@ -31,7 +31,7 @@ RequestManager
 InventoryManager
 {
 	[
-	  "userName": "Lulquid",
+	  "userName": "Lulquid",x
 	  "email": "Lulquidiatez3@gmail.com",
 	  "password": "niSht!nsaneeE21"
 	],

@@ -2,6 +2,12 @@
 
 namespace srrf.Models
 {
+    public enum RequestStatus
+    {
+        Pending,
+        Approved,
+        Rejected
+    }
     public class HardwareRequest
     {
         [Key]
@@ -15,6 +21,6 @@ namespace srrf.Models
         public string SerialNo { get; set; } = string.Empty;
         public Hardware Hardware { get; set; } 
         public int HardwareId { get; set; }
-
+        public RequestStatus Status { get; set; } = RequestStatus.Pending;
     }
 }

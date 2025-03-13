@@ -33,13 +33,18 @@ namespace srrf.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);  
+                return BadRequest(ModelState);
             }
 
             var hardwares = await _repository.GetAllAsync(queryHardware);
-            var hardwaresdto = hardwares.Select(h => h.ToHardwareDto());
+            var hardwaresDto = hardwares.Select(h =>
+            {
+                var dto = h.ToHardwareDto();
+                dto.IsInventoryManager = User.IsInRole("InventoryManager"); 
+                return dto;
+            });
 
-            return Ok(hardwares);
+            return Ok(hardwaresDto);
         }
 
         [Authorize(Roles = "SystemManager, InventoryManager, RequestManager")]

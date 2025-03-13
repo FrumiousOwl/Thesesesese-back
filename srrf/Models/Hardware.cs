@@ -10,5 +10,6 @@
         public int? Available { get; set; }
         public int? Deployed { get; set; }
         public string Supplier { get; set; } = string.Empty;
+        public string TotalPrice { get; set; } = string.Empty;
     }
 }

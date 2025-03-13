@@ -131,7 +131,9 @@ namespace srrf.Data
         {
             base.OnModelCreating(modelBuilder);
 
-
+            modelBuilder.Entity<HardwareRequest>()
+                .Property(hr => hr.Status)
+                .HasConversion<string>();
         }
 
     }

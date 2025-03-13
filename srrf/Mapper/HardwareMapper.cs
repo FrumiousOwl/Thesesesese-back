@@ -21,7 +21,8 @@ namespace srrf.Mapper
                 Supplier = hardwareModel.Supplier,
                 Defective = hardwareModel.Defective,
                 Available = hardwareModel.Available,
-                Deployed = hardwareModel.Deployed
+                Deployed = hardwareModel.Deployed,
+                TotalPrice = hardwareModel.TotalPrice
             };
         }
         public static Hardware CreateHardwareDto(this HardwareCUDDto hardwareDto)
@@ -34,7 +35,8 @@ namespace srrf.Mapper
                 Supplier = hardwareDto.Supplier,
                 Defective = hardwareDto.Defective,
                 Available = hardwareDto.Available,
-                Deployed = hardwareDto.Deployed
+                Deployed = hardwareDto.Deployed,
+                TotalPrice = hardwareDto.TotalPrice
             };
         }
     }
