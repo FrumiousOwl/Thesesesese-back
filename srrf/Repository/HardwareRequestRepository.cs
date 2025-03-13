@@ -96,6 +96,7 @@ namespace srrf.Repository
             {
                 existRequest.IsFulfilled = hardwareRequestDto.IsFulfilled;
                 existRequest.SerialNo = hardwareRequestDto.SerialNo;
+                existRequest.Status = hardwareRequestDto.Status;
             }
 
             await _context.SaveChangesAsync();

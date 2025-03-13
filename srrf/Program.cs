@@ -41,13 +41,16 @@ builder.Services.AddDbContext<Context>(options => options.UseSqlServer(builder.C
 builder.Services.AddIdentity<User, IdentityRole>(options =>
 {
     options.Password.RequireDigit = true;
-    options.Password.RequireLowercase = true; 
+    options.Password.RequireLowercase = true;
     options.Password.RequireUppercase = true;
     options.Password.RequireNonAlphanumeric = true;
     options.Password.RequiredLength = 11;
 })
     .AddEntityFrameworkStores<Context>()
     .AddDefaultTokenProviders();
+
+builder.Services.AddScoped<IPasswordHasher<User>, BcryptPasswordHasher<User>>();
+
 
 var jwtSettings = builder.Configuration.GetSection("JWT");
 var key = Encoding.UTF8.GetBytes(jwtSettings["SigningKey"] ?? throw new InvalidOperationException("JWT Signing Key is missing"));

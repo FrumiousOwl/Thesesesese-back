@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using srrf.Dto.Account;
 using srrf.Interfaces;
 using srrf.Models;
+using srrf.Service;
 using System.Security.Claims;
 using System.Text;
 
@@ -57,9 +58,12 @@ namespace srrf.Controllers
                 return BadRequest(result.Errors);
             }
 
+            var passwordHasher = (BcryptPasswordHasher<User>)_userManager.PasswordHasher;
+            user.PasswordHash = passwordHasher.HashPassword(user, changePasswordDto.NewPassword);
+            await _userManager.UpdateAsync(user);
+
             return Ok("Password changed successfully.");
         }
-
 
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto loginDto)
@@ -75,6 +79,13 @@ namespace srrf.Controllers
 
             if (!result.Succeeded) return Unauthorized("Username not found and/or password incorrect");
 
+            var passwordHasher = (BcryptPasswordHasher<User>)_userManager.PasswordHasher;
+            if (_userManager.PasswordHasher.VerifyHashedPassword(user, user.PasswordHash, loginDto.Password) == PasswordVerificationResult.Success)
+            {
+                user.PasswordHash = passwordHasher.HashPassword(user, loginDto.Password);
+                await _userManager.UpdateAsync(user);
+            }
+
             return Ok(
                 new NewUserDto
                 {
@@ -85,6 +96,7 @@ namespace srrf.Controllers
                 }
             );
         }
+
 
         [HttpPost("Register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
@@ -172,6 +184,10 @@ namespace srrf.Controllers
             {
                 return BadRequest(result.Errors);
             }
+
+            var passwordHasher = (BcryptPasswordHasher<User>)_userManager.PasswordHasher;
+            user.PasswordHash = passwordHasher.HashPassword(user, temporaryPassword);
+            await _userManager.UpdateAsync(user);
 
             return Ok("Password reset successfully.");
         }

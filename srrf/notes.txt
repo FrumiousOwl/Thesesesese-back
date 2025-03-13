@@ -46,7 +46,7 @@ User
 {
 	[
 	  "userName": "Glimmer",
-	  "password": "suPt0Glimm$r26Min_t33*ok"
+	  "password": "c0r3Gl1!mmer0k"
 	  "email": "GlimmeringCapeyy@gmail.com",
 	],
 	[
@@ -54,5 +54,11 @@ User
 	  "email": "BuggyMidas11@gmail.com",
 	  "password": "G0ld3n(@rg3#-fDe!"
 	],
+	[
+	  "userName": "Revelous",
+	  "email": "nocrit@gmail.com",
+      "phoneNumber": "09266462114",
+      "password": "Da3d@lusbr0oCH"
+	]
 }
 
