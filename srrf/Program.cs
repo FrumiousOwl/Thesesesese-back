@@ -23,7 +23,8 @@ builder.Services.AddCors(options =>
     options.AddPolicy("ReactPolicy",
         builder =>
         {
-            builder.SetIsOriginAllowed(origin => new Uri(origin).Host == "localhost")
+            builder.SetIsOriginAllowed(origin =>
+                new Uri(origin).Host == "localhost")
                    .AllowAnyMethod()
                    .AllowAnyHeader()
                    .AllowCredentials();
@@ -163,12 +164,16 @@ if (context.Request.Path.StartsWithSegments("/api") && context.Response.StatusCo
     }
 });
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || app.Configuration.GetValue<bool>("SwaggerEnabled"))
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "SRRF API v1");
+        c.RoutePrefix = "";
+    });
 }
+  
 app.UseCors("ReactPolicy");
 
 app.UseHttpsRedirection();
