@@ -59,10 +59,10 @@ namespace srrf.Repository
             return await hardware.ToListAsync();
         }
 
-        public async Task<IEnumerable<AvailableHardwareDto>> GetAvailableHardwareAsync(QueryAvailableHardware query)
+        public async Task<IEnumerable<AvailableHardwareDto>> GetAvailableHardwareAsync(QueryAvailableHardware query, bool isInventoryManager)
         {
             var availableHardware = _context.Hardware
-            .Where(h => h.Available > 0);
+                .Where(h => h.Available > 0);
 
             if (!string.IsNullOrEmpty(query.Descriptions))
             {
@@ -80,19 +80,21 @@ namespace srrf.Repository
                 Available = h.Available,
                 Deployed = h.Deployed,
                 DatePurchased = h.DatePurchased,
-                Supplier = h.Supplier
+                Supplier = h.Supplier, 
+                IsInventoryManager = isInventoryManager
             }).ToListAsync();
         }
+
 
         public async Task<Hardware?> GetByIdAsync(int id)
         {
             return await _context.Hardware.FindAsync(id);
         }
 
-        public async Task<IEnumerable<DefectiveHardwareDto>> GetDefectiveHardwareAsync(QueryDefectiveHardware query)
+        public async Task<IEnumerable<DefectiveHardwareDto>> GetDefectiveHardwareAsync(QueryDefectiveHardware query, bool isInventoryManager)
         {
             var defectiveHardware = _context.Hardware
-            .Where(h => h.Defective > 0);
+                .Where(h => h.Defective > 0);
 
             if (!string.IsNullOrEmpty(query.Descriptions))
             {
@@ -109,7 +111,8 @@ namespace srrf.Repository
                 Name = h.Name,
                 Defective = h.Defective,
                 DatePurchased = h.DatePurchased,
-                Supplier = h.Supplier
+                Supplier = h.Supplier,
+                IsInventoryManager = isInventoryManager
             }).ToListAsync();
         }
 

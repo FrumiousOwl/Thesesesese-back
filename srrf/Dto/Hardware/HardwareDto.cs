@@ -13,8 +13,8 @@ namespace srrf.Dto.Hardware
         private string _supplier;
         public string Supplier
         {
-            get => IsInventoryManager ? AesEncryption.Decrypt(_supplier) : _supplier; // Decrypt for Inventory Managers
-            set => _supplier = value; // Store the encrypted value directly from DB
+            get => IsInventoryManager ? AesEncryption.Decrypt(_supplier) : _supplier; 
+            set => _supplier = value; 
         }
 
         private string _totalPrice;

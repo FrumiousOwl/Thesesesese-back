@@ -73,7 +73,8 @@ namespace srrf.Controllers
         {
             try
             {
-                var availableHardware = await _repository.GetAvailableHardwareAsync(query);
+                bool isInventoryManager = User.IsInRole("InventoryManager");
+                var availableHardware = await _repository.GetAvailableHardwareAsync(query, isInventoryManager);
                 return Ok(availableHardware);
             }
             catch (Exception ex)
@@ -89,7 +90,8 @@ namespace srrf.Controllers
         {
             try
             {
-                var defectiveHardware = await _repository.GetDefectiveHardwareAsync(query);
+                bool isInventoryManager = User.IsInRole("InventoryManager");
+                var defectiveHardware = await _repository.GetDefectiveHardwareAsync(query, isInventoryManager);
                 return Ok(defectiveHardware);
             }
             catch (Exception ex)

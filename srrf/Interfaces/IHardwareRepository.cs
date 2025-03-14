@@ -11,8 +11,8 @@ namespace srrf.Interfaces
         Task<Hardware> CreateAsync(Hardware hardwareModel);
         Task<Hardware?> UpdateAsync(int id, HardwareCUDDto hardwareDto);
         Task<Hardware?> DeleteAsync(int id);
-        Task<IEnumerable<AvailableHardwareDto>> GetAvailableHardwareAsync(QueryAvailableHardware query);
-        Task<IEnumerable<DefectiveHardwareDto>> GetDefectiveHardwareAsync(QueryDefectiveHardware query);
+        Task<IEnumerable<AvailableHardwareDto>> GetAvailableHardwareAsync(QueryAvailableHardware query, bool isInventoryManager);
+        Task<IEnumerable<DefectiveHardwareDto>> GetDefectiveHardwareAsync(QueryDefectiveHardware query, bool isInventoryManager);
 
     }
 }
