@@ -120,7 +120,7 @@ namespace srrf.Controllers
             return CreatedAtAction(nameof(GetId), new { hardwareRequestId = hardwareRequestModel.RequestId }, hardwareRequestModel.ToHardwareRequestDto());
         }
 
-        [Authorize(Roles = "RequestManager, User")]
+        [Authorize(Roles = "RequestManager, User, InventoryManager, SystemManager")]
         [HttpPut]
         [Route("{hardwareRequestId:int}")]
         public async Task<IActionResult> Update([FromRoute] int hardwareRequestId, [FromBody] HardwareRequestCUDDto updateDto)
