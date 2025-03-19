@@ -51,7 +51,7 @@ namespace srrf.MachineLearning
                     }
                 }
 
-                await Task.Delay(6666, stoppingToken); 
+                await Task.Delay(60000, stoppingToken); //1min
             }
         }
 

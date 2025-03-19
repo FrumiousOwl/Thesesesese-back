@@ -24,8 +24,8 @@ builder.Services.AddCors(options =>
         builder =>
         {
             builder.SetIsOriginAllowed(origin =>
-                new Uri(origin).Host == "localhost")
-                   .AllowAnyMethod()
+               new Uri(origin).Host == "localhost")
+                  .AllowAnyMethod()
                    .AllowAnyHeader()
                    .AllowCredentials();
         });
@@ -115,7 +115,6 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
-
 builder.Services.AddSwaggerGen(option =>
 {
     option.SwaggerDoc("v1", new OpenApiInfo { Title = "SRRF API", Version = "v1" });
@@ -173,13 +172,12 @@ if (app.Environment.IsDevelopment() || app.Configuration.GetValue<bool>("Swagger
         c.RoutePrefix = "";
     });
 }
-  
-app.UseCors("ReactPolicy");
 
 app.UseHttpsRedirection();
 
+app.UseCors("ReactPolicy");
+
 app.UseAuthentication();
-/*app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000"));*/
 
 app.UseAuthorization();
 
