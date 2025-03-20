@@ -8,57 +8,62 @@
 
 SystemManager
 {
-  "userName": "MouseRat",
-  "password": "ae@335xddRiki#"
-  "email": "Admin23qwxsq@gmail.com",
-  "PhoneNumber": "09238322296"
+	"userName": "MouseRat",
+	"password": "ae@335xddRiki#"
+	"email": "Admin23qwxsq@gmail.com",
+	"PhoneNumber": "09238322296"
 }
 
 RequestManager
 {
 	[
-	  "userName": "Tundraa",
-	  "email": "Turdra22@gmail.com",
-	  "password": "33Monch0B33m$ucksz@"
+		"userName": "Tundraa",
+		"email": "Turdra22@gmail.com",
+		"password": "33Monch0B33m$ucksz@"
 	],
 	[
-	  "userName": "FallClown",
-	  "password": "FalC0n!3seee666^^^"
-	  "email": "FallClown209@gmail.com",
+		"userName": "FallClown",
+		"password": "FalC0n!3seee666^^^"
+		"email": "FallClown209@gmail.com",
 	]
 }
 
 InventoryManager
 {
 	[
-	  "userName": "Lulquid",
-	  "email": "Lulquidiatez3@gmail.com",
-	  "password": "Sabr3B!ade^^"
+		"userName": "Lulquid",
+		"email": "Lulquidiatez3@gmail.com",
+		"password": "Sabr3B!ade^^"
 	],
 	[
-	  "userName": "BillieJeans",
-	  "password": "--J@cK!nTh3MO0nN--"
-	  "email": "Billyjeanyzs@example.com",
+		"userName": "BillieJeans",
+		"password": "--J@cK!nTh3MO0nN--"
+		"email": "Billyjeanyzs@example.com",
 	]
 }
 
 User
 {
 	[
-	  "userName": "Glimmer",
-	  "password": "c0r3Gl1!mmer0k"
-	  "email": "GlimmeringCapeyy@gmail.com",
+		"userName": "Glimmer",
+		"password": "c0r3Gl1!mmer0k"
+		"email": "GlimmeringCapeyy@gmail.com",
+	],
+	[	"userName": "ThunderBrooch",
+		"email": "user@example.com",
+		"phoneNumber": "09336722178",
+		"password": "hrygdvksdjikx52835#%)^SFK"
 	],
 	[
-	  "userName": "Midas",
-	  "email": "BuggyMidas11@gmail.com",
-	  "password": "G0ld3n(@rg3#-fDe!"
+		"userName": "Midas",
+		"email": "BuggyMidas11@gmail.com",
+		"password": "G0ld3n(@rg3#-fDe!"
 	],
 	[
-	  "userName": "Revelous",
-	  "email": "nocrit@gmail.com",
-      "phoneNumber": "09266462114",
-      "password": "Da3d@lusbr0oCH"
+		"userName": "Revelous",
+		"email": "nocrit@gmail.com",
+		"phoneNumber": "09266462114",
+		"password": "Da3d@lusbr0oCH"
 	]
 }
 
